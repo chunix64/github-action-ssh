@@ -1,0 +1,109 @@
+name: Ubuntu Linux SSH
+
+on:
+  workflow_dispatch:
+    inputs:
+      SSH_MAX_TIME:
+        description: 'SSH session max duration (1–6 hrs)'
+        required: true
+        default: 2
+        type: choice
+        options:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+      NGROK_AUTH_TOKEN:
+        description: 'ngrok API auth token'
+        required: true
+        default: ''
+      SWAP_SIZE:
+        description: 'add Swap/virtual RAM in GBs'
+        required: false
+        default: 20
+      START_MINISERVE:
+        description: 'Enable miniserve HTTP file server'
+        type: boolean
+        default: true
+      START_CLEAN_UP:
+        description: 'Run disk cleanup (~27GB→68GB free, ~4min)'
+        type: boolean
+        default: true
+
+jobs:
+  github-ssh:
+    runs-on: ubuntu-latest
+    if: github.event.repository.owner.id == github.event.sender.id
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Clean-up
+        if: ${{ github.event.inputs.START_CLEAN_UP == 'true' }}
+        uses: rokibhasansagar/slimhub_actions@main
+
+      - name: Swap Setup
+        if: ${{ github.event.inputs.START_SWAP_SPACE >= 0 }}
+        uses: pierotofy/set-swap-space@master
+        with:
+          swap-size-gb: ${{ github.event.inputs.SWAP_SIZE }}
+
+      - name: Install ngrok
+        run: |
+          curl -s https://ngrok-agent.s3.amazonaws.com/ngrok.asc | sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null
+          echo "deb https://ngrok-agent.s3.amazonaws.com buster main" | sudo tee /etc/apt/sources.list.d/ngrok.list
+          sudo apt update && sudo apt install -y ngrok
+          ngrok config add-authtoken "${{ github.event.inputs.NGROK_AUTH_TOKEN }}"
+
+      - name: Setup SSH server
+        run: |
+          sudo apt update
+          sudo apt install -y openssh-server
+          sudo mkdir -p /var/run/sshd
+          sudo useradd -m -s /bin/bash debuguser
+          echo "debuguser:password" | sudo chpasswd
+          sudo mkdir -p /home/debuguser/.ssh
+          echo "${{ secrets.SSH_PUBLIC_KEY }}" | sudo tee /home/debuguser/.ssh/authorized_keys
+          sudo chown -R debuguser:debuguser /home/debuguser/.ssh
+          sudo chmod 600 /home/debuguser/.ssh/authorized_keys
+          echo "debuguser ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/debuguser
+          sudo service ssh start
+
+      - name: Start miniserve
+        if: ${{ github.event.inputs.START_MINISERVE == 'true' }}
+        run: |
+          wget -q -nc https://github.com/svenstaro/miniserve/releases/download/v0.31.0/miniserve-0.31.0-x86_64-unknown-linux-gnu
+          chmod +x ./miniserve-0.31.0-x86_64-unknown-linux-gnu
+          nohup sudo ./miniserve-0.31.0-x86_64-unknown-linux-gnu / --hidden --port 80 --directory-size --upload-files &
+                    
+      - name: Start ngrok
+        run: |
+          chmod +x gen_ngrok_config.sh
+          ./gen_ngrok_config.sh ${{ github.event.inputs.NGROK_AUTH_TOKEN }}
+          nohup ngrok start --all --config=./ngrok.yml &>/dev/null &
+          sleep 5
+          curl -s localhost:4040/api/tunnels | jq -r '.tunnels[0].public_url' > ngrok_url.txt
+          miniserve_url=$(curl -s localhost:4040/api/tunnels | jq -r '.tunnels[] | select(.proto=="https") | .public_url')
+          url=$(cat ngrok_url.txt)
+          host=$(echo "$url" | sed -E 's#^tcp://([^:]+):.*#\1#')
+          port=$(echo "$url" | sed -E 's#^tcp://[^:]+:(.*)$#\1#')
+          echo "🌐 Miniserve available at: $miniserve_url"
+          echo "🔑 Connect with: ssh debuguser@$host -p $port"
+          echo "🔑 Connect with: sshpass -p 'password' ssh -o StrictHostKeyChecking=no debuguser@$host -p $port"
+          echo "🔑 Default password: password"
+          echo "TUNNEL: $url"
+
+      - name: Keep session alive
+        run: |
+          trap '' SIGINT SIGTERM
+          HOURS=${{ github.event.inputs.SSH_MAX_TIME }}
+          SECONDS=$((HOURS * 3600))
+          echo "⏳ Keeping SSH session alive for $HOURS hour(s) ($SECONDS seconds)"
+          sleep "$SECONDS" || true
