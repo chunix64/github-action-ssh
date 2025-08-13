@@ -1,12 +1,16 @@
 #!/bin/sh
 cat <<EOF > ngrok.yml
-    version: 2
-    authtoken: $1
-    tunnels:
-      web_app:
-        addr: 80
-        proto: http
-      ssh_server:
-        addr: 22
-        proto: tcp
+version: 3
+
+agent:
+  authtoken: $1
+  api_key: $2
+
+tunnels:
+  miniserve:
+    proto: http
+    addr: 80
+  ssh_server:
+    addr: 22
+    proto: tcp
 EOF
