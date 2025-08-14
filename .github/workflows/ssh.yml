@@ -89,16 +89,15 @@ jobs:
           ./gen_ngrok_config.sh ${{ github.event.inputs.NGROK_AUTH_TOKEN }}
           nohup ngrok start --all --config=./ngrok.yml &>/dev/null &
           sleep 5
-          curl -s localhost:4040/api/tunnels | jq -r '.tunnels[0].public_url' > ngrok_url.txt
-          miniserve_url=$(curl -s localhost:4040/api/tunnels | jq -r '.tunnels[] | select(.proto=="https") | .public_url')
-          url=$(cat ngrok_url.txt)
-          host=$(echo "$url" | sed -E 's#^tcp://([^:]+):.*#\1#')
-          port=$(echo "$url" | sed -E 's#^tcp://[^:]+:(.*)$#\1#')
+          ssh_url=$(curl -s localhost:4040/api/tunnels | jq -r '.tunnels[] | select(.name=="ssh_server") | .public_url')  
+          miniserve_url=$(curl -s localhost:4040/api/tunnels | jq -r '.tunnels[] | select(.name=="miniserve" and .proto=="https") | .public_url')
+          host=$(echo "$ssh_url" | sed -E 's#^tcp://([^:]+):.*#\1#')
+          port=$(echo "$ssh_url" | sed -E 's#^tcp://[^:]+:(.*)$#\1#')
           echo "🌐 Miniserve available at: $miniserve_url"
           echo "🔑 Connect with: ssh debuguser@$host -p $port"
           echo "🔑 Connect with: sshpass -p 'password' ssh -o StrictHostKeyChecking=no debuguser@$host -p $port"
           echo "🔑 Default password: password"
-          echo "TUNNEL: $url"
+          echo "TUNNEL: $ssh_url"
 
       - name: Keep session alive
         run: |
