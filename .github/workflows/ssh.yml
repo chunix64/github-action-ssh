@@ -60,7 +60,13 @@ jobs:
           curl -s https://ngrok-agent.s3.amazonaws.com/ngrok.asc | sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null
           echo "deb https://ngrok-agent.s3.amazonaws.com buster main" | sudo tee /etc/apt/sources.list.d/ngrok.list
           sudo apt update && sudo apt install -y ngrok
-          ngrok config add-authtoken "${{ github.event.inputs.NGROK_AUTH_TOKEN }}"
+
+      - name: Install cloudflared
+        run: |
+          sudo mkdir -p --mode=0755 /usr/share/keyrings
+          curl -fsSL https://pkg.cloudflare.com/cloudflare-main.gpg | sudo tee /usr/share/keyrings/cloudflare-main.gpg >/dev/null
+          echo 'deb [signed-by=/usr/share/keyrings/cloudflare-main.gpg] https://pkg.cloudflare.com/cloudflared noble main' | sudo tee /etc/apt/sources.list.d/cloudflared.list
+          sudo apt update && sudo apt install -y cloudflared
 
       - name: Setup SSH server
         run: |
@@ -82,22 +88,40 @@ jobs:
           wget -q -nc https://github.com/svenstaro/miniserve/releases/download/v0.31.0/miniserve-0.31.0-x86_64-unknown-linux-gnu
           chmod +x ./miniserve-0.31.0-x86_64-unknown-linux-gnu
           nohup sudo ./miniserve-0.31.0-x86_64-unknown-linux-gnu / --hidden --port 80 --directory-size --upload-files &
-                    
+
+      - name: Start cloudflared
+        run: |
+          mkdir -p /tmp/logs/cloudflared/
+          nohup cloudflared tunnel --url http://localhost:80 2> /tmp/logs/cloudflared/miniserve.log &
+          nohup cloudflared tunnel --url ssh://localhost:22 2> /tmp/logs/cloudflared/ssh.log &
+          sleep 5
+
+          cloudflared_miniserve_url=$(grep -m1 -oE "https?://[a-zA-Z0-9.-]+\.trycloudflare\.com" /tmp/logs/cloudflared/miniserve.log)
+          cloudflared_ssh_url=$(grep -m1 -oE "https?://[a-zA-Z0-9.-]+\.trycloudflare\.com" /tmp/logs/cloudflared/ssh.log)
+          cloudflared_ssh_host=$(echo "$cloudflared_ssh_url" | sed -E 's#https?://##')
+
+          echo "🌐 Miniserve available at: $cloudflared_miniserve_url"
+          echo "🔑 Connect with: ssh -o ProxyCommand=\"cloudflared access ssh --hostname %h\" debuguser@$cloudflared_ssh_host"
+          echo "🔑 Connect with: sshpass -p 'password' ssh -o StrictHostKeyChecking=no -o ProxyCommand=\"cloudflared access ssh --hostname %h\" debuguser@$cloudflared_ssh_host"
+          echo "🔑 Default password: password"
+          echo "TUNNEL: $cloudflared_ssh_url"
+
+
       - name: Start ngrok
         run: |
           chmod +x gen_ngrok_config.sh
           ./gen_ngrok_config.sh ${{ github.event.inputs.NGROK_AUTH_TOKEN }}
           nohup ngrok start --all --config=./ngrok.yml &>/dev/null &
           sleep 5
-          ssh_url=$(curl -s localhost:4040/api/tunnels | jq -r '.tunnels[] | select(.name=="ssh_server") | .public_url')  
-          miniserve_url=$(curl -s localhost:4040/api/tunnels | jq -r '.tunnels[] | select(.name=="miniserve" and .proto=="https") | .public_url')
-          host=$(echo "$ssh_url" | sed -E 's#^tcp://([^:]+):.*#\1#')
-          port=$(echo "$ssh_url" | sed -E 's#^tcp://[^:]+:(.*)$#\1#')
-          echo "🌐 Miniserve available at: $miniserve_url"
-          echo "🔑 Connect with: ssh debuguser@$host -p $port"
-          echo "🔑 Connect with: sshpass -p 'password' ssh -o StrictHostKeyChecking=no debuguser@$host -p $port"
+          ngrok_ssh_url=$(curl -s localhost:4040/api/tunnels | jq -r '.tunnels[] | select(.name=="ssh_server") | .public_url')  
+          ngrok_miniserve_url=$(curl -s localhost:4040/api/tunnels | jq -r '.tunnels[] | select(.name=="miniserve" and .proto=="https") | .public_url')
+          ngrok_host=$(echo "$ngrok_ssh_url" | sed -E 's#^tcp://([^:]+):.*#\1#')
+          ngrok_port=$(echo "$ngrok_ssh_url" | sed -E 's#^tcp://[^:]+:(.*)$#\1#')
+          echo "🌐 Miniserve available at: $ngrok_miniserve_url"
+          echo "🔑 Connect with: ssh debuguser@$ngrok_host -p $ngrok_port"
+          echo "🔑 Connect with: sshpass -p 'password' ssh -o StrictHostKeyChecking=no debuguser@$ngrok_host -p $ngrok_port"
           echo "🔑 Default password: password"
-          echo "TUNNEL: $ssh_url"
+          echo "TUNNEL: $ngrok_ssh_url"
 
       - name: Keep session alive
         run: |
