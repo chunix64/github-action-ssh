@@ -6,15 +6,15 @@ on:
       SSH_MAX_TIME:
         description: 'SSH session max duration (1–6 hrs)'
         required: true
-        default: 2
+        default: '2h'
         type: choice
         options:
-          - 1
-          - 2
-          - 3
-          - 4
-          - 5
-          - 6
+          - '1h'
+          - '2h'
+          - '3h'
+          - '4h'
+          - '5h'
+          - '5h45m'
       NGROK_AUTH_TOKEN:
         description: 'ngrok API auth token'
         required: true
@@ -136,7 +136,14 @@ jobs:
       - name: Keep session alive
         run: |
           trap '' SIGINT SIGTERM
-          HOURS=${{ github.event.inputs.SSH_MAX_TIME }}
-          SECONDS=$((HOURS * 3600))
-          echo "⏳ Keeping SSH session alive for $HOURS hour(s) ($SECONDS seconds)"
-          sleep "$SECONDS" || true
+          RAW_TIME="${{ github.event.inputs.SSH_MAX_TIME }}"
+          case "$RAW_TIME" in
+            1h) SLEEP_TIME=$((1 * 3600)) ;;
+            2h) SLEEP_TIME=$((2 * 3600)) ;;
+            3h) SLEEP_TIME=$((3 * 3600)) ;;
+            4h) SLEEP_TIME=$((4 * 3600)) ;;
+            5h) SLEEP_TIME=$((5 * 3600)) ;;
+            5h45m) SLEEP_TIME=$((5 * 3600 + 45 * 60)) ;;
+          esac
+          echo "⏳ Keeping SSH session alive for $RAW_TIME ($SLEEP_TIME seconds)"
+          sleep "$SLEEP_TIME" || true
