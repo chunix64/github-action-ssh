@@ -22,7 +22,7 @@ on:
       SWAP_SIZE:
         description: 'add Swap/virtual RAM in GBs'
         required: false
-        default: 20
+        default: 16
       START_MINISERVE:
         description: 'Enable miniserve HTTP file server'
         type: boolean
@@ -35,15 +35,23 @@ on:
 jobs:
   github-ssh:
     runs-on: ubuntu-latest
-    if: github.event.repository.owner.id == github.event.sender.id
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     permissions:
       contents: write
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Prepare variables
+        env:
+          NGROK_TOKEN: ${{ secrets.NGROK_AUTH_TOKEN }}
+        run: |
+          NGROK_AUTH_TOKEN=$(jq -r '.inputs.NGROK_AUTH_TOKEN' $GITHUB_EVENT_PATH)
+          echo ::add-mask::$NGROK_AUTH_TOKEN
+          if [ -n "$NGROK_AUTH_TOKEN" ]; then
+            NGROK_TOKEN="$NGROK_AUTH_TOKEN"
+          fi
+          echo NGROK_TOKEN=$NGROK_TOKEN >> $GITHUB_ENV
 
       - name: Clean-up
         if: ${{ github.event.inputs.START_CLEAN_UP == 'true' }}
@@ -110,13 +118,15 @@ jobs:
       - name: Start ngrok
         run: |
           chmod +x gen_ngrok_config.sh
-          ./gen_ngrok_config.sh ${{ github.event.inputs.NGROK_AUTH_TOKEN }}
+          ./gen_ngrok_config.sh "$NGROK_TOKEN"
           nohup ngrok start --all --config=./ngrok.yml &>/dev/null &
           sleep 5
+          
           ngrok_ssh_url=$(curl -s localhost:4040/api/tunnels | jq -r '.tunnels[] | select(.name=="ssh_server") | .public_url')  
           ngrok_miniserve_url=$(curl -s localhost:4040/api/tunnels | jq -r '.tunnels[] | select(.name=="miniserve" and .proto=="https") | .public_url')
           ngrok_host=$(echo "$ngrok_ssh_url" | sed -E 's#^tcp://([^:]+):.*#\1#')
           ngrok_port=$(echo "$ngrok_ssh_url" | sed -E 's#^tcp://[^:]+:(.*)$#\1#')
+          
           echo "🌐 Miniserve available at: $ngrok_miniserve_url"
           echo "🔑 Connect with: ssh debuguser@$ngrok_host -p $ngrok_port"
           echo "🔑 Connect with: sshpass -p 'password' ssh -o StrictHostKeyChecking=no debuguser@$ngrok_host -p $ngrok_port"
