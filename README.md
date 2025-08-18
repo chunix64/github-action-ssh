@@ -1,15 +1,15 @@
 # 🚀 Ubuntu Linux SSH via ngrok GitHub Action
 
-This GitHub Action sets up an Ubuntu Linux environment with SSH access tunneled through **ngrok**, optionally serving files with **miniserve**, cleaning up disk space, and adding swap memory.
+This GitHub Action sets up an Ubuntu Linux environment with SSH access tunneled through **ngrok**, **cloudflared**, serving files with **miniserve**, cleaning up disk space, and adding swap memory.
 
 ---
 
 ## ⚙️ Features
 
-- 🔐 Secure SSH access via ngrok TCP tunnel  
+- 📡 SSH access via ngrok and cloudflared tunnel 
 - 🌐 Optional HTTP file server with miniserve  
 - 🧹 Optional disk cleanup to free up space (~27GB → 68GB)  
-- 💾 Optional swap/virtual RAM extension (default: 4GB → 24GB)  
+- 💾 Optional swap/virtual RAM extension
 - ⏳ SSH session auto-kept alive up to 6 hours  
 
 ---
@@ -22,7 +22,7 @@ This GitHub Action sets up an Ubuntu Linux environment with SSH access tunneled 
 | `NGROK_AUTH_TOKEN`  | String  | —       | Your ngrok API auth token (required)            |
 | `START_MINISERVE`   | Boolean | true    | Enable HTTP file server for file sharing        |
 | `START_CLEAN_UP`    | Boolean | true    | Run disk cleanup to free space (~4 min runtime) |
-| `SWAP_SPACE`        | String  | 20      | Add swap space / virtual RAM in GBs             |
+| `SWAP_SPACE`        | String  | 16      | Add swap space / virtual RAM in GBs             |
 
 ---
 
@@ -40,7 +40,7 @@ This GitHub Action sets up an Ubuntu Linux environment with SSH access tunneled 
 TUNNEL: <url>
 ```
 
-4. Connect via SSH or use miniserve for file sharing.
+5. Connect via SSH or use miniserve for file sharing.
 
 ---
 
@@ -60,6 +60,8 @@ TUNNEL: <url>
 - You can cancel the workflow anytime, but SSH session ends when the runner stops.  
 - `START_MINISERVE` serves your entire filesystem (beware of sensitive data).  
 - Requires a valid ngrok auth token to create tunnels.  
+- Why 5h45m instead of 6h? 
+  Answer: The server is terminated before GitHub does, ensuring the workflow completes successfully and normalizes GitHub activity.
 
 ---
 
@@ -69,7 +71,7 @@ TUNNEL: <url>
 ---
 
 ## 📝Todos
-- Support Cloudflared and other tunnels
+- Support Cloudflared and other tunnels (Done: 50%)
 - Support terminal/SSH over web, especially mobile
 - Support macOS and Windows SSH
 - Add more documentation

@@ -17,7 +17,7 @@ on:
           - '5h45m'
       NGROK_AUTH_TOKEN:
         description: 'ngrok API auth token'
-        required: true
+        required: false
         default: ''
       SWAP_SIZE:
         description: 'add Swap/virtual RAM in GBs'
@@ -43,6 +43,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Prepare variables
+        id: prepare
         env:
           NGROK_TOKEN: ${{ secrets.NGROK_AUTH_TOKEN }}
         run: |
@@ -52,6 +53,12 @@ jobs:
             NGROK_TOKEN="$NGROK_AUTH_TOKEN"
           fi
           echo NGROK_TOKEN=$NGROK_TOKEN >> $GITHUB_ENV
+
+          if [ -n "$NGROK_TOKEN" ] && [ "$NGROK_TOKEN" != "null" ]; then
+            echo "ngrok_token_not_empty=true" >> $GITHUB_OUTPUT
+          else
+            echo "ngrok_token_not_empty=false" >> $GITHUB_OUTPUT
+          fi
 
       - name: Clean-up
         if: ${{ github.event.inputs.START_CLEAN_UP == 'true' }}
@@ -64,7 +71,9 @@ jobs:
           swap-size-gb: ${{ github.event.inputs.SWAP_SIZE }}
 
       - name: Install ngrok
+        if: ${{ steps.prepare.outputs.ngrok_token_not_empty == 'true' }}
         run: |
+          echo "test: $NGROK_TOKEN"
           curl -s https://ngrok-agent.s3.amazonaws.com/ngrok.asc | sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null
           echo "deb https://ngrok-agent.s3.amazonaws.com buster main" | sudo tee /etc/apt/sources.list.d/ngrok.list
           sudo apt update && sudo apt install -y ngrok
@@ -116,6 +125,7 @@ jobs:
 
 
       - name: Start ngrok
+        if: ${{ steps.prepare.outputs.ngrok_token_not_empty == 'true' }}
         run: |
           chmod +x gen_ngrok_config.sh
           ./gen_ngrok_config.sh "$NGROK_TOKEN"
@@ -146,4 +156,5 @@ jobs:
             5h45m) SLEEP_TIME=$((5 * 3600 + 45 * 60)) ;;
           esac
           echo "⏳ Keeping SSH session alive for $RAW_TIME ($SLEEP_TIME seconds)"
+          echo "🔗 Updates available at: https://github.com/chunix64/github-action-ssh"
           sleep "$SLEEP_TIME" || true
