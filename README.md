@@ -8,7 +8,7 @@ This GitHub Action sets up an Ubuntu Linux environment with SSH access tunneled 
 
 - 📡 SSH access via ngrok and cloudflared tunnel 
 - 🌐 Optional HTTP file server with miniserve  
-- 🧹 Optional disk cleanup to free up space (~27GB → 68GB)  
+- 🧹 Optional disk cleanup to free up space (~78GB → 125GB)  
 - 💾 Optional swap/virtual RAM extension
 - ⏳ SSH session auto-kept alive up to 6 hours  
 
@@ -19,7 +19,7 @@ This GitHub Action sets up an Ubuntu Linux environment with SSH access tunneled 
 | Name                | Type    | Default | Description                                     |
 |---------------------|---------|---------|-------------------------------------------------|
 | `SSH_MAX_TIME`      | Choice  | 2       | SSH max session duration in hours (1–6)         |
-| `NGROK_AUTH_TOKEN`  | String  | —       | Your ngrok API auth token (required)            |
+| `NGROK_AUTH_TOKEN`  | String  | —       | Your ngrok API auth token to use ngrok          |
 | `START_MINISERVE`   | Boolean | true    | Enable HTTP file server for file sharing        |
 | `START_CLEAN_UP`    | Boolean | true    | Run disk cleanup to free space (~4 min runtime) |
 | `SWAP_SPACE`        | String  | 16      | Add swap space / virtual RAM in GBs             |
@@ -46,7 +46,7 @@ TUNNEL: <url>
 
 ## 🔧 What it does internally
 
-- Installs required packages: SSH server, ngrok
+- Installs required packages: SSH server, ngrok, cloudflared
 - Creates a user `debuguser` with password `password` and SSH key access
 - Sets up ngrok tunnels for SSH and HTTP (miniserve)
 - Optionally cleans up disk space and adds swap memory
@@ -56,26 +56,31 @@ TUNNEL: <url>
 
 ## 💡 Notes
 
+- You should fork this repository and set it to private for better security and privacy.
 - **Password access** is `debuguser` / `password`. Use SSH keys for better security.  
 - You can cancel the workflow anytime, but SSH session ends when the runner stops.  
 - `START_MINISERVE` serves your entire filesystem (beware of sensitive data).  
-- Requires a valid ngrok auth token to create tunnels.  
+- Requires a valid ngrok auth token to create ngrok tunnels.
+- The workflow support ngrok auth token as github secret: `secrets.NGROK_AUTH_TOKEN` (optional)
 - Why 5h45m instead of 6h? 
   Answer: The server is terminated before GitHub does, ensuring the workflow completes successfully and normalizes GitHub activity.
 
 ---
 
 ## 🧑‍💻 For customization
-- Fork and customize `gen_ngrok_config.sh` in your repo to modify tunnel config (Open more port)
+- Fork and customize `gen_ngrok_config.sh` in your repo to modify ngrok tunnel config (Open more port)
 
 ---
 
 ## 📝Todos
-- Support Cloudflared and other tunnels (Done: 50%)
+- Support custom username and password
+- Support other tunnels
+- Support custom domains
 - Support terminal/SSH over web, especially mobile
 - Support macOS and Windows SSH
 - Add more documentation
 - Open all common ports by default
+- A web dashboard UI with settings
 
 ## 🔗 External Sources
 

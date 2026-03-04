@@ -28,9 +28,9 @@ on:
         type: boolean
         default: true
       START_CLEAN_UP:
-        description: 'Run disk cleanup (~27GB→68GB free, ~4min)'
+        description: 'Run disk cleanup (~78GB→125GB free, ~4min)'
         type: boolean
-        default: true
+        default: false
 
 jobs:
   github-ssh:
@@ -107,11 +107,14 @@ jobs:
           nohup sudo ./miniserve-0.31.0-x86_64-unknown-linux-gnu / --hidden --port 80 --directory-size --upload-files &
 
       - name: Start cloudflared
+        continue-on-error: true
         run: |
           mkdir -p /tmp/logs/cloudflared/
           nohup cloudflared tunnel --url http://localhost:80 2> /tmp/logs/cloudflared/miniserve.log &
+          cat /tmp/logs/cloudflared/miniserve.log
           nohup cloudflared tunnel --url ssh://localhost:22 2> /tmp/logs/cloudflared/ssh.log &
-          sleep 5
+          cat /tmp/logs/cloudflared/ssh.log
+          sleep 10
 
           cloudflared_miniserve_url=$(grep -m1 -oE "https?://[a-zA-Z0-9.-]+\.trycloudflare\.com" /tmp/logs/cloudflared/miniserve.log)
           cloudflared_ssh_url=$(grep -m1 -oE "https?://[a-zA-Z0-9.-]+\.trycloudflare\.com" /tmp/logs/cloudflared/ssh.log)
@@ -126,6 +129,7 @@ jobs:
 
       - name: Start ngrok
         if: ${{ steps.prepare.outputs.ngrok_token_not_empty == 'true' }}
+        continue-on-error: true
         run: |
           chmod +x gen_ngrok_config.sh
           ./gen_ngrok_config.sh "$NGROK_TOKEN"
