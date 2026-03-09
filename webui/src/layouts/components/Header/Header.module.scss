@@ -1,0 +1,28 @@
+.nav {
+  background-color: var(--color-bg-secondary);
+  display: flex;
+  justify-content: space-between;
+  height: var(--header-height);
+  padding: var(--space-4) var(--space-base);
+  box-sizing: border-box;
+
+  .brand {
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: var(--font-size-xl);
+  }
+
+  .menu {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  a {
+    color: var(--color-primary-foreground);
+    text-decoration: none;
+  }
+}
