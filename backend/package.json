@@ -1,0 +1,25 @@
+{
+  "name": "github-action-ssh-backend",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/chunix64/github-action-ssh#readme",
+  "bugs": {
+    "url": "https://github.com/chunix64/github-action-ssh/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chunix64/github-action-ssh.git"
+  },
+  "license": "GPL-3.0-or-later",
+  "author": "chunix64",
+  "type": "commonjs",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "express": "^5.2.1",
+    "systeminformation": "^5.31.4"
+  }
+}
