@@ -1,0 +1,25 @@
+.wrapper {
+  background-color: var(--color-bg-secondary);
+  width: fit-content;
+  height: fit-content;
+  padding: var(--space-base);
+  border-radius: var(--radius-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-base);
+}
+
+.uptime, .time-remain{
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+
+  .title {
+    font-weight: bold;
+    font-size: var(--font-size-lg);
+  }
+
+  .value {
+    font-size: var(--font-size-md); 
+  }
+}

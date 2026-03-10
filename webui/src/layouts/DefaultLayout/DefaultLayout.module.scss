@@ -7,5 +7,7 @@
 .container {
   width: 100vw;
   height: calc(100vh - var(--header-height) * 2);
-  overflow: scroll;
+  overflow-x: hidden;
+  padding: var(--space-base);
+  box-sizing: border-box;
 }
