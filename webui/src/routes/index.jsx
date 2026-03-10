@@ -6,6 +6,7 @@ import DefaultLayout from "@/layouts/DefaultLayout";
 
 import NotFound from "@/pages/NotFound"
 import Home from "@/pages/Home"
+import ComingSoon from "@/pages/ComingSoon"
 
 function createRoute(path, Component, Layout) {
   let AppliedLayout = DefaultLayout;
@@ -30,6 +31,10 @@ const publicRoutes = createBrowserRouter([
   createRoute(config.routes.notFound, NotFound),
   createRoute(config.routes.root, Home),
   createRoute(config.routes.home, Home),
+  createRoute(config.routes.toolbox, ComingSoon),
+  createRoute(config.routes.logs, ComingSoon),
+  createRoute(config.routes.terminal, ComingSoon),
+  createRoute(config.routes.settings, ComingSoon),
 ]);
 
 const privateRoutes = [];
