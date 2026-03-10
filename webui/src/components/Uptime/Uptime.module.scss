@@ -1,12 +1,12 @@
 .wrapper {
   background-color: var(--color-bg-secondary);
   width: fit-content;
-  height: fit-content;
   padding: var(--space-base);
   border-radius: var(--radius-xl);
   display: flex;
   flex-direction: column;
   gap: var(--space-base);
+  box-sizing: border-box;
 }
 
 .uptime, .time-remain{

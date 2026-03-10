@@ -40,8 +40,10 @@ function Home() {
   return (
     <div className={cx("wrapper")}>
       <SystemMonitor cpu={cpu} ram={ram} swap={swap} disk={disk}/>
-      <Uptime startTime={1773112200} endTime={1773237400}/>
-      <ServiceStatus/>
+      <div className={cx('widgets')}>
+        <Uptime startTime={1773112200} endTime={1773237400}/>
+        <ServiceStatus/>
+      </div>
       <ServiceList/>
     </div>
   )
