@@ -1,6 +1,6 @@
 function getFormattedTimeRange(totalSeconds) {
   if (totalSeconds <= 0) {
-    return "00:00:00"
+    return "00h 00m 00s"
   }
 
   const hours = Math.floor(totalSeconds / 3600); // 1 hour = 3600 seconds
@@ -11,7 +11,7 @@ function getFormattedTimeRange(totalSeconds) {
   const formattedMinutes = minutes.toString().padStart(2, '0');
   const formattedSeconds = seconds.toString().padStart(2, '0');
 
-  return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
+  return `${formattedHours}h ${formattedMinutes}m ${formattedSeconds}s`;
 }
 
 function getRemainingTime(end, currentTime) {

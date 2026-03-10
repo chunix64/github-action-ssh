@@ -9,7 +9,9 @@
   box-sizing: border-box;
 }
 
-.title {
+.status {
   font-size: var(--font-size-lg);
   font-weight: bold;
+  display: flex;
+  align-items: center;
 }

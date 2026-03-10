@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import classNames from "classnames/bind";
 import { getUptime, getRemainingTime } from "@/utils/time.js";
 
+import TimerRoundedIcon from '@mui/icons-material/TimerRounded';
+import TimerOffRoundedIcon from '@mui/icons-material/TimerOffRounded';
 import styles from "./Uptime.module.scss";
 const cx = classNames.bind(styles);
 
@@ -19,13 +21,19 @@ function Uptime({ startTime, endTime }) {
 
   return (<div className={cx('wrapper')}>
     <div className={cx('uptime')}>
-      <span className={cx('title')}>Uptime</span>
+      <div className={cx('title')}>
+        <TimerRoundedIcon/>
+        <span className={cx('label')}>Uptime</span>
+      </div>
       <span className={cx('value')}>{getUptime(startTime, now)}</span>
     </div>
-    <span className={cx('time-remain')}>
-      <span className={cx('title')}>Remaining</span>
+    <div className={cx('time-remain')}>
+      <div className={cx('title')}>
+        <TimerOffRoundedIcon/>
+        <span className={cx('label')}>Remaining</span>
+      </div>
       <span className={cx('value')}>{getRemainingTime(endTime, now)}</span>
-    </span>
+    </div>
   </div>)
 }
 

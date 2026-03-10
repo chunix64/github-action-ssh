@@ -42,7 +42,7 @@ function Home() {
       <SystemMonitor cpu={cpu} ram={ram} swap={swap} disk={disk}/>
       <div className={cx('widgets')}>
         <Uptime startTime={1773112200} endTime={1773237400}/>
-        <ServiceStatus/>
+        <ServiceStatus serviceName="Miniserve" status={1}/>
       </div>
       <ServiceList/>
     </div>
