@@ -18,9 +18,9 @@ export async function getRamInfo() {
   return {
     ram: {
       total: mem.total,
-      used: mem.used,
-      free: mem.free,
-      percent: (mem.used / mem.total) * 100
+      used: mem.active,
+      free: mem.available,
+      percent: (mem.active / mem.total) * 100
     },
     swap: {
       total: mem.swaptotal,

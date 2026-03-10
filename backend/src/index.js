@@ -12,8 +12,9 @@ const frontendApp = express();
 
 const port = 13636;
 const frontendPort = 80;
+const apiPath = "/api/v1";
 
-app.get("/request/cpuInfo", async (req, res) => {
+app.get(`${apiPath}/request/cpuInfo`, async (req, res) => {
   try {
     const cpu = await getCpuInfo();
     res.json(cpu);
@@ -22,7 +23,7 @@ app.get("/request/cpuInfo", async (req, res) => {
   }
 });
 
-app.get("/request/ramInfo", async (req, res) => {
+app.get(`${apiPath}/request/ramInfo`, async (req, res) => {
   try {
     const ram = await getRamInfo();
     res.json(ram);
@@ -31,7 +32,7 @@ app.get("/request/ramInfo", async (req, res) => {
   }
 });
 
-app.get("/request/diskInfo", async (req, res) => {
+app.get(`${apiPath}/request/diskInfo`, async (req, res) => {
   try {
     const disk = await getDiskInfo();
     res.json(disk);
