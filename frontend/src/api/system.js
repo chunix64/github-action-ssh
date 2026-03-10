@@ -1,14 +1,14 @@
 import { apiFetch } from "@/api/client";
 
-export function getCpuInfo() {
-  return apiFetch("/request/cpuInfo");
+export async function getCpuInfo() {
+  return await apiFetch("/request/cpuInfo");
 }
 
-export function getRamInfo() {
-  return apiFetch("/request/ramInfo");
+export async function getMemoryInfo() {
+  return await apiFetch("/request/memoryInfo");
 }
 
-export function getDiskInfo() {
-  return apiFetch("/request/diskInfo");
+export async function getDiskInfo() {
+  return await apiFetch("/request/diskInfo");
 }
 

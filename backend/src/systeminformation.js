@@ -12,7 +12,7 @@ export async function getCpuInfo() {
   };
 }
 
-export async function getRamInfo() {
+export async function getMemoryInfo() {
   const mem = await si.mem();
 
   return {

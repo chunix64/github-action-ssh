@@ -1,7 +1,8 @@
 import express from "express";
+import cors from "cors";
 import { fileURLToPath } from 'url';
 import path from 'path';
-import { getCpuInfo, getRamInfo, getDiskInfo } from "./systeminformation.js";
+import { getCpuInfo, getMemoryInfo, getDiskInfo } from "./systeminformation.js";
 
 
 const __filename = fileURLToPath(import.meta.url);
@@ -14,6 +15,9 @@ const port = 13636;
 const frontendPort = 80;
 const apiPath = "/api/v1";
 
+app.use(cors());
+frontendApp.use(cors()); 
+
 app.get(`${apiPath}/request/cpuInfo`, async (req, res) => {
   try {
     const cpu = await getCpuInfo();
@@ -23,10 +27,10 @@ app.get(`${apiPath}/request/cpuInfo`, async (req, res) => {
   }
 });
 
-app.get(`${apiPath}/request/ramInfo`, async (req, res) => {
+app.get(`${apiPath}/request/memoryInfo`, async (req, res) => {
   try {
-    const ram = await getRamInfo();
-    res.json(ram);
+    const memory = await getMemoryInfo();
+    res.json(memory);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

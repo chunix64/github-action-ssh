@@ -1,4 +1,6 @@
 import classNames from "classnames/bind";
+import { useEffect, useState } from "react";
+import { getSystemInfo } from "@/api/polling";
 
 import MemoryRoundedIcon from '@mui/icons-material/MemoryRounded';
 import DnsRoundedIcon from '@mui/icons-material/DnsRounded';
@@ -9,80 +11,52 @@ import ProgressBar from "@/components/ProgressBar";
 import styles from "./SystemMonitor.module.scss";
 const cx = classNames.bind(styles);
 
-/*
- TODO:
- cpu = {
-  averageUsage: 88,
-  // multi-threads
-  usages: [
-    99,
-    56,
-    36,
-    77
-  ],
-  frequencies: [
-    2200,
-    3300,
-    4545,
-    2432,
-  ]
-  info: {
-    name: ...
-    frequency: ...
-  }
- }
+function SystemMonitor() {
+  const [data, setData] = useState(null);
+  
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      setData(await getSystemInfo());
+    }, 2000);
 
-TODO:
-ram: {
-  totalBytes: 99999,
-  usedBytes: 333,
-}
+    return () => clearInterval(interval);
+  }, []);
 
-swap: {
-  totalBytes: 99999,
-  usedBytes: 333,
-}
+  console.log(data);
 
-disk: {
-  totalBytes: 99999,
-  usedBytes: 333,
-}
- */
-
-function SystemMonitor({ cpu, ram, swap, disk }) {
   return (
     <div className={cx("wrapper")}>
       <div className={cx("cpu", "bar")}>
         <div className={cx("text")}>
           <MemoryRoundedIcon/>
           <span className={cx('label')}>CPU:</span>
-          <span className={cx('value')}>{cpu?.averageUsage}%</span>
+          <span className={cx('value')}>{data?.cpu?.averageUsage}%</span>
         </div>
-        <ProgressBar value={cpu?.averageUsage} />
+        <ProgressBar value={data?.cpu?.averageUsage} />
       </div>
       <div className={cx("ram", "bar")}>
         <div className={cx("text")}>
           <DnsRoundedIcon/>
           <span className={cx('label')}>RAM:</span>
-          <span className={cx('value')}>{ram?.usedPercent}%</span>
+          <span className={cx('value')}>{data?.memory?.ram?.percent}%</span>
         </div>
-        <ProgressBar value={ram?.usedPercent} />
+        <ProgressBar value={data?.memory?.ram?.percent} />
       </div>
       <div className={cx("swap", "bar")}>
         <div className={cx("text")}>
           <SwapHorizontalCircleRoundedIcon/>
           <span className={cx('label')}>Swap:</span>
-          <span className={cx('value')}>{swap?.usedPercent}%</span>
+          <span className={cx('value')}>{data?.memory?.swap?.percent}%</span>
         </div>
-        <ProgressBar value={swap?.usedPercent} />
+        <ProgressBar value={data?.memory?.swap?.percent} />
       </div>
       <div className={cx("disk", "bar")}>
         <div className={cx("text")}>
           <StorageRoundedIcon/>
           <span className={cx('label')}>Disk:</span>
-          <span className={cx('value')}>{disk?.usedPercent}%</span>
+          <span className={cx('value')}>{data?.disk?.percent}%</span>
         </div>
-        <ProgressBar value={disk?.usedPercent} />
+        <ProgressBar value={data?.disk?.percent} />
       </div>
     </div>
   )
