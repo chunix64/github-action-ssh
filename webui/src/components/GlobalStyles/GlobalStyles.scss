@@ -1,7 +1,8 @@
 :root {
   // Colors
   --color-bg: #141118;
-  --color-bg-secondary: #201F25; 
+  --color-bg-secondary: #201F25;
+  --color-bg-third: #242128;
   --color-bg-base: #35343A;
   --color-bg-muted: #16161a;
   --color-bg-hover: #1e1e23;
@@ -38,6 +39,7 @@
 
   --space-base: var(--space-4);
   --header-height: 64px;
+  --border-base: 2px;
 
   // Fonts
   --font-main:

@@ -9,7 +9,6 @@ function ServiceStatus({ serviceName = "unknown", status = -1, Icon = Psychology
   return (
     <div className={cx('wrapper')}>
       <div className={cx('title')}>
-        <Icon/>
         <span className={cx('text')}>{serviceName}</span>
       </div>
       <div className={cx('status')}>

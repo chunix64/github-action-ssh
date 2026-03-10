@@ -7,6 +7,7 @@ const cx = classNames.bind(styles);
 import SystemMonitor from "@/components/SystemMonitor"
 import Uptime from "@/components/Uptime"
 import ServiceStatus from "@/components/ServiceStatus"
+import ServiceList from "@/components/ServiceList"
 
 function fakeCpu() {
   const [cpuUsage, setCpuUsage] = useState(0);
@@ -39,8 +40,9 @@ function Home() {
   return (
     <div className={cx("wrapper")}>
       <SystemMonitor cpu={cpu} ram={ram} swap={swap} disk={disk}/>
-      <Uptime startTime={1773112200} endTime={1773137400}/>
+      <Uptime startTime={1773112200} endTime={1773237400}/>
       <ServiceStatus/>
+      <ServiceList/>
     </div>
   )
 }
