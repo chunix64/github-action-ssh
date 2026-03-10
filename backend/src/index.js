@@ -1,6 +1,11 @@
-const express = require("express");
-const path = require('path');
-const { getCpuInfo, getRamInfo, getDiskInfo } = require("./system.js");
+import express from "express";
+import { fileURLToPath } from 'url';
+import path from 'path';
+import { getCpuInfo, getRamInfo, getDiskInfo } from "./systeminformation.js";
+
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const frontendApp = express();
