@@ -149,9 +149,11 @@ jobs:
         if: ${{ steps.prepare.outputs.ngrok_token_not_empty == 'true' }}
         continue-on-error: true
         run: |
+          cd $GITHUB_WORKSPACE
+          pwd
           chmod +x gen_ngrok_config.sh
           ./gen_ngrok_config.sh "$NGROK_TOKEN"
-          nohup ngrok start --all --config=./ngrok.yml > /tmp/logs/ngrok/latest.log 2&>1 &
+          nohup ngrok start --all --config=./ngrok.yml > /tmp/logs/ngrok/latest.log &
           sleep 5
           echo "sleep for 5 seconds"
 
