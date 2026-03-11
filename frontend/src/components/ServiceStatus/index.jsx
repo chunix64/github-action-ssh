@@ -1,19 +1,20 @@
 import classNames from "classnames/bind";
 
-import PsychologyAltRoundedIcon from '@mui/icons-material/PsychologyAltRounded';
+import FiberManualRecordRoundedIcon from '@mui/icons-material/FiberManualRecordRounded';
+import InfoRoundedIcon from '@mui/icons-material/InfoRounded';
 import styles from "./ServiceStatus.module.scss";
 const cx = classNames.bind(styles);
 
-function ServiceStatus({ serviceName = "Unknown", status = -1, Icon = PsychologyAltRoundedIcon}) {
+function ServiceStatus({ serviceName = "Unknown", status = -1, Icon = InfoRoundedIcon }) {
   switch (status) {
     case 0:
-      status = "Offline"
+      status = "offline"
       break;
     case 1:
-      status = "Online"
+      status = "online"
       break;
     case -1:
-      status = "Unknown"
+      status = "unknown"
       break;
     default:
       break;
@@ -22,11 +23,11 @@ function ServiceStatus({ serviceName = "Unknown", status = -1, Icon = Psychology
   return (
     <div className={cx('wrapper')}>
       <div className={cx('title')}>
-        <span className={cx('text')}>{serviceName}</span>
+        <InfoRoundedIcon/>
+        <span className={cx('label')}>{serviceName}</span>
       </div>
-      <div className={cx('status')}>
-        <span className={cx('text')}>Status: {status}</span>
-        <Icon/> 
+      <div className={cx('status', status)}>
+        <span className={cx('text')}>Status: <span className={cx('value')}>{status} <FiberManualRecordRoundedIcon/></span></span>
       </div>
     </div>
   )

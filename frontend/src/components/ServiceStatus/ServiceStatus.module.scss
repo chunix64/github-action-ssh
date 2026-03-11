@@ -7,11 +7,43 @@
   flex-direction: column;
   gap: var(--space-1);
   box-sizing: border-box;
+  justify-content: center;
+}
+
+.title {
+  font-size: var(--font-size-base);
+  display: flex;
+  align-items: center;
+
+  .label {
+    margin-left: var(--space-1);
+  }
 }
 
 .status {
-  font-size: var(--font-size-lg);
-  font-weight: bold;
   display: flex;
   align-items: center;
+  font-size: var(--font-size-lg);
+    
+  .text {
+    display: flex;
+    align-items: center;
+  }
+
+  .value {
+    margin-left: var(--space-1);
+    font-weight: bold;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    color: var(--color-warning);
+  }
+
+  &.online .value {
+    color: var(--color-success);
+  }
+
+  &.offline .value {
+    color: var(--color-danger);
+  }
 }

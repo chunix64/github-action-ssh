@@ -14,7 +14,7 @@ function Home() {
       <SystemMonitor/>
       <div className={cx('widgets')}>
         <Uptime/>
-        <ServiceStatus serviceName="Miniserve" status={1}/>
+        <ServiceStatus serviceName="Miniserve"/>
       </div>
       <ServiceList/>
     </div>
