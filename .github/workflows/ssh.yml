@@ -158,6 +158,7 @@ jobs:
           echo "sleep for 5 seconds"
 
           ngrok_dashboard_url=$(curl -s localhost:4040/api/tunnels | jq -r '.tunnels[] | select(.name=="dashboard" and .proto=="https") | .public_url')
+          ngrok_dashboard_url=${ngrok_dashboard_url/https:/http:}
           ngrok_ssh_url=$(curl -s localhost:4040/api/tunnels | jq -r '.tunnels[] | select(.name=="ssh_server") | .public_url')  
           ngrok_miniserve_url=$(curl -s localhost:4040/api/tunnels | jq -r '.tunnels[] | select(.name=="miniserve" and .proto=="https") | .public_url')
           ngrok_host=$(echo "$ngrok_ssh_url" | sed -E 's#^tcp://([^:]+):.*#\1#')
