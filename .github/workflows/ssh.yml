@@ -82,13 +82,15 @@ jobs:
         with:
           swap-size-gb: ${{ github.event.inputs.SWAP_SIZE }}
       
-      - name: Setup github-action-ssh
+      - name: Setup github-action-ssh dashboard
         run: |
           cd $GITHUB_WORKSPACE/frontend
           npm i
           npm run build
           cd $GITHUB_WORKSPACE/backend
           npm i
+          mkdir $GITHUB_WORKSPACE/runtime
+          cd $GITHUB_WORKSPACE/runtime
 
       - name: Install ngrok
         if: ${{ steps.prepare.outputs.ngrok_token_not_empty == 'true' }}
