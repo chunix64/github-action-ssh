@@ -47,12 +47,9 @@ export async function getDiskInfo() {
 }
 
 export async function isServiceRunning(name, strict = false) {
-  const option = "";
-  if (strict) {
-    option = "-x";
-  }
+  const args = strict ? ["-x", name] : [name];
   const code = await new Promise((resolve, reject) => {
-    const p = spawn("pgrep", [option, name]);
+    const p = spawn("pgrep", args);
 
     p.on("error", reject);
     p.on("close", resolve);
