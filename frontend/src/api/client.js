@@ -4,7 +4,7 @@ const api_host = config?.app?.api_host ?? window.location.hostname;
 const api_port = config?.app?.api_port;
 const api_base = config?.app?.api_base;
 
-const API_BASE = `https://${api_host}:${api_port}${api_base}`;
+const API_BASE = `http://${api_host}:${api_port}${api_base}`;
 
 export async function apiFetch(path, options = {}) {
   let res;
