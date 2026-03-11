@@ -15,14 +15,14 @@ function getFormattedTimeRange(totalSeconds) {
 }
 
 function getRemainingTime(end, currentTime, message = "Unknown") {
-  if (end == 0) {
+  if (!end || end == 0) {
     return message;
   }
   return getFormattedTimeRange(end - currentTime);
 }
 
 function getUptime(start, currentTime, message = "Unknown") {
-  if (start == 0) {
+  if (!start || start == 0) {
     return message;
   }
   return getFormattedTimeRange(currentTime - start);

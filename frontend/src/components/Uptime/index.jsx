@@ -10,8 +10,8 @@ import { getSessionTime } from "@/api/session";
 
 const cx = classNames.bind(styles);
 const sessionTime = await getSessionTime();
-const sessionStartTime = sessionTime.sessionStartTimestamp;
-const sessionEndTime = sessionTime.sessionEndTimestamp;
+const sessionStartTime = sessionTime?.sessionStartTimestamp;
+const sessionEndTime = sessionTime?.sessionEndTimestamp;
 
 function Uptime({ startTime = sessionStartTime, endTime = sessionEndTime }) {
   const [now, setNow] = useState(Math.floor(Date.now() / 1000));

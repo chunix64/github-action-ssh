@@ -1,17 +1,28 @@
 import config from "@/config";
 
-const API_BASE = `http://${window.location.hostname}:${config.app.api_port}/api/v1`;
+const api_host = config?.app?.api_host ?? window.location.hostname;
+const api_port = config?.app?.api_port ?? 13636;
+const api_base = config?.app?.api_base ?? "/api/v1";
+
+const API_BASE = `http://${api_host}:${api_port}${api_base}`;
 
 export async function apiFetch(path, options = {}) {
-  const res = await fetch(`${API_BASE}${path}`, {
-    headers: {
-      "Content-Type": "application/json",
-    },
-    ...options,
-  });
+  let res;
+  try {
+    res = await fetch(`${API_BASE}${path}`, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      ...options,
+    });
+  } catch (error) {
+    console.warn(`Network error: ${error.message}`);
+    return {};
+  }
 
   if (!res.ok) {
-    throw new Error(`API error: ${res.status}`);
+    console.warn(`API error: ${res.status}`);
+    return {};
   }
 
   return res.json();
