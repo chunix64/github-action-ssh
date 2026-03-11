@@ -12,6 +12,9 @@ const app = express();
 const frontend = express();
 const API_BASE = "/api/v1";
 
+app.set('trust proxy', true);
+frontend.set('trust proxy', true);
+
 app.use(cors());
 frontend.use(cors());
 
