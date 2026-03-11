@@ -5,11 +5,20 @@ import { getUptime, getRemainingTime } from "@/utils/time.js";
 import TimerRoundedIcon from '@mui/icons-material/TimerRounded';
 import TimerOffRoundedIcon from '@mui/icons-material/TimerOffRounded';
 import styles from "./Uptime.module.scss";
+
+import { getSessionTime } from "@/api/session";
+
 const cx = classNames.bind(styles);
+const sessionTime = await getSessionTime();
+const sessionStartTime = sessionTime.sessionStartTimestamp;
+const sessionEndTime = sessionTime.sessionEndTimestamp;
 
-function Uptime({ startTime, endTime }) {
+function Uptime({ 
+  startTime = sessionStartTime,
+  endTime = sessionEndTime
+}) {
   const [now, setNow] = useState(Math.floor(Date.now() / 1000));
-
+  
   useEffect(() => {
     const interval = setInterval(() => {
       setNow(Math.floor(Date.now() / 1000));

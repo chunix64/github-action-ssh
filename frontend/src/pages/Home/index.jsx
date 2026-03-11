@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import classNames from "classnames/bind";
 
 import styles from "./Home.module.scss";
@@ -14,7 +13,7 @@ function Home() {
     <div className={cx("wrapper")}>
       <SystemMonitor/>
       <div className={cx('widgets')}>
-        <Uptime startTime={1773112200} endTime={1773237400}/>
+        <Uptime/>
         <ServiceStatus serviceName="Miniserve" status={1}/>
       </div>
       <ServiceList/>

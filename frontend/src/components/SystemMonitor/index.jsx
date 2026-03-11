@@ -25,8 +25,6 @@ function SystemMonitor() {
     return () => clearInterval(interval);
   }, []);
 
-  console.log(data);
-
   return (
     <div className={cx("wrapper")}>
       <MonitorBar label="CPU" value={data?.cpu?.averageUsage} />

@@ -14,11 +14,17 @@ function getFormattedTimeRange(totalSeconds) {
   return `${formattedHours}h ${formattedMinutes}m ${formattedSeconds}s`;
 }
 
-function getRemainingTime(end, currentTime) {
+function getRemainingTime(end, currentTime, message = "Unknown") {
+  if (end == 0) {
+    return message;
+  }
   return getFormattedTimeRange(end - currentTime);
 }
 
-function getUptime(start, currentTime) {
+function getUptime(start, currentTime, message = "Unknown") {
+  if (start == 0) {
+    return message;
+  }
   return getFormattedTimeRange(currentTime - start);
 }
 
