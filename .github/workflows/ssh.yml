@@ -69,6 +69,11 @@ jobs:
           esac
           END_TIME=$((START_TIME + SLEEP_TIME))
 
+          mkdir -p /tmp/logs/dashboard/
+          mkdir -p /tmp/logs/miniserve/
+          mkdir -p /tmp/logs/cloudflared/
+          mkdir -p /tmp/logs/ngrok/
+
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -126,24 +131,19 @@ jobs:
         run: |
           wget -q -nc https://github.com/svenstaro/miniserve/releases/download/v0.33.0/miniserve-0.33.0-x86_64-unknown-linux-gnu
           chmod +x ./miniserve-0.33.0-x86_64-unknown-linux-gnu
-          mkdir -p /tmp/miniserve
           nohup sudo ./miniserve-0.33.0-x86_64-unknown-linux-gnu / \
           -p 8080 \
           -i 0.0.0.0 \
           --hidden \
           --upload-files \
-          --overwrite-files \
           --mkdir \
           --directory-size \
           --show-symlink-info \
-          --gzip \
-          --brotli \
-          --spa \
           --index index.html \
           --route-prefix / \
           --header "Access-Control-Allow-Origin: *" \
           --verbose \
-          > /tmp/miniserve/latest.log 2>&1 &
+          > /tmp/logs/miniserve/latest.log 2>&1 &
 
       - name: Start ngrok
         if: ${{ steps.prepare.outputs.ngrok_token_not_empty == 'true' }}
@@ -151,7 +151,7 @@ jobs:
         run: |
           chmod +x gen_ngrok_config.sh
           ./gen_ngrok_config.sh "$NGROK_TOKEN"
-          nohup ngrok start --all --config=./ngrok.yml &>/dev/null &
+          nohup ngrok start --all --config=./ngrok.yml > /tmp/logs/ngrok/latest.log 2&>1 &
           sleep 5
           echo "sleep for 5 seconds"
 
@@ -171,7 +171,6 @@ jobs:
       - name: Start cloudflared
         continue-on-error: true
         run: |
-          mkdir -p /tmp/logs/cloudflared/
           nohup cloudflared tunnel --url http://localhost:80 2> /tmp/logs/cloudflared/dashboard.log &
           nohup cloudflared tunnel --url http://localhost:8080 2> /tmp/logs/cloudflared/miniserve.log &
           cat /tmp/logs/cloudflared/miniserve.log
@@ -196,6 +195,6 @@ jobs:
         run: |
           trap '' SIGINT SIGTERM
           cd $GITHUB_WORKSPACE/backend
-          sudo npm start --session-start-timestamp=$START_TIME --session-end-timestamp=$END_TIME --exit-on-session-end
+          sudo npm start --session-start-timestamp=$START_TIME --session-end-timestamp=$END_TIME --exit-on-session-end > /tmp/logs/dashboard/latest.log 2>&1
           echo "⏳ Keeping SSH session alive for $RAW_TIME ($SLEEP_TIME seconds)"
           echo "🔗 Updates available at: https://github.com/chunix64/github-action-ssh"
