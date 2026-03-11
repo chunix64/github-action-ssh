@@ -39,14 +39,12 @@ jobs:
       contents: write
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
       - name: Prepare variables
         id: prepare
         env:
           NGROK_TOKEN: ${{ secrets.NGROK_AUTH_TOKEN }}
         run: |
+          echo "START_TIME=$(date +%s)" >> $GITHUB_ENV
           NGROK_AUTH_TOKEN=$(jq -r '.inputs.NGROK_AUTH_TOKEN' $GITHUB_EVENT_PATH)
           echo ::add-mask::$NGROK_AUTH_TOKEN
           if [ -n "$NGROK_AUTH_TOKEN" ]; then
@@ -59,6 +57,20 @@ jobs:
           else
             echo "ngrok_token_not_empty=false" >> $GITHUB_OUTPUT
           fi
+          
+          RAW_TIME="${{ github.event.inputs.SSH_MAX_TIME }}"
+          case "$RAW_TIME" in
+            1h) SLEEP_TIME=$((1 * 3600)) ;;
+            2h) SLEEP_TIME=$((2 * 3600)) ;;
+            3h) SLEEP_TIME=$((3 * 3600)) ;;
+            4h) SLEEP_TIME=$((4 * 3600)) ;;
+            5h) SLEEP_TIME=$((5 * 3600)) ;;
+            5h45m) SLEEP_TIME=$((5 * 3600 + 45 * 60)) ;;
+          esac
+          END_TIME=$((START_TIME + SLEEP_TIME))
+     
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Clean-up
         if: ${{ github.event.inputs.START_CLEAN_UP == 'true' }}
@@ -69,6 +81,14 @@ jobs:
         uses: pierotofy/set-swap-space@master
         with:
           swap-size-gb: ${{ github.event.inputs.SWAP_SIZE }}
+      
+      - name: Setup github-action-ssh
+        run: |
+          cd $GITHUB_WORKSPACE/frontend
+          npm i
+          npm run build
+          cd $GITHUB_WORKSPACE/backend
+          npm i
 
       - name: Install ngrok
         if: ${{ steps.prepare.outputs.ngrok_token_not_empty == 'true' }}
@@ -106,27 +126,6 @@ jobs:
           chmod +x ./miniserve-0.31.0-x86_64-unknown-linux-gnu
           nohup sudo ./miniserve-0.31.0-x86_64-unknown-linux-gnu / --hidden --port 80 --directory-size --upload-files &
 
-      - name: Start cloudflared
-        continue-on-error: true
-        run: |
-          mkdir -p /tmp/logs/cloudflared/
-          nohup cloudflared tunnel --url http://localhost:80 2> /tmp/logs/cloudflared/miniserve.log &
-          cat /tmp/logs/cloudflared/miniserve.log
-          nohup cloudflared tunnel --url ssh://localhost:22 2> /tmp/logs/cloudflared/ssh.log &
-          cat /tmp/logs/cloudflared/ssh.log
-          sleep 10
-
-          cloudflared_miniserve_url=$(grep -m1 -oE "https?://[a-zA-Z0-9.-]+\.trycloudflare\.com" /tmp/logs/cloudflared/miniserve.log)
-          cloudflared_ssh_url=$(grep -m1 -oE "https?://[a-zA-Z0-9.-]+\.trycloudflare\.com" /tmp/logs/cloudflared/ssh.log)
-          cloudflared_ssh_host=$(echo "$cloudflared_ssh_url" | sed -E 's#https?://##')
-
-          echo "🌐 Miniserve available at: $cloudflared_miniserve_url"
-          echo "🔑 Connect with: ssh -o ProxyCommand=\"cloudflared access ssh --hostname %h\" debuguser@$cloudflared_ssh_host"
-          echo "🔑 Connect with: sshpass -p 'password' ssh -o StrictHostKeyChecking=no -o ProxyCommand=\"cloudflared access ssh --hostname %h\" debuguser@$cloudflared_ssh_host"
-          echo "🔑 Default password: password"
-          echo "TUNNEL: $cloudflared_ssh_url"
-
-
       - name: Start ngrok
         if: ${{ steps.prepare.outputs.ngrok_token_not_empty == 'true' }}
         continue-on-error: true
@@ -135,30 +134,48 @@ jobs:
           ./gen_ngrok_config.sh "$NGROK_TOKEN"
           nohup ngrok start --all --config=./ngrok.yml &>/dev/null &
           sleep 5
+          echo "sleep for 5 seconds"
           
+          ngrok_dashboard_url=$(curl -s localhost:4040/api/tunnels | jq -r '.tunnels[] | select(.name=="dashboard" and .proto=="https") | .public_url')
           ngrok_ssh_url=$(curl -s localhost:4040/api/tunnels | jq -r '.tunnels[] | select(.name=="ssh_server") | .public_url')  
           ngrok_miniserve_url=$(curl -s localhost:4040/api/tunnels | jq -r '.tunnels[] | select(.name=="miniserve" and .proto=="https") | .public_url')
           ngrok_host=$(echo "$ngrok_ssh_url" | sed -E 's#^tcp://([^:]+):.*#\1#')
           ngrok_port=$(echo "$ngrok_ssh_url" | sed -E 's#^tcp://[^:]+:(.*)$#\1#')
-          
+         
+          echo "🖥️ Dashboard available at: $ngrok_dashboard_url"
           echo "🌐 Miniserve available at: $ngrok_miniserve_url"
           echo "🔑 Connect with: ssh debuguser@$ngrok_host -p $ngrok_port"
           echo "🔑 Connect with: sshpass -p 'password' ssh -o StrictHostKeyChecking=no debuguser@$ngrok_host -p $ngrok_port"
           echo "🔑 Default password: password"
-          echo "TUNNEL: $ngrok_ssh_url"
+          echo "TUNNEL: $ngrok_ssh_url"          
+
+      - name: Start cloudflared
+        continue-on-error: true
+        run: |
+          mkdir -p /tmp/logs/cloudflared/
+          nohup cloudflared tunnel --url http://localhost:80 2> /tmp/logs/cloudflared/dashboard.log &
+          nohup cloudflared tunnel --url http://localhost:8080 2> /tmp/logs/cloudflared/miniserve.log &
+          cat /tmp/logs/cloudflared/miniserve.log
+          nohup cloudflared tunnel --url ssh://localhost:22 2> /tmp/logs/cloudflared/ssh.log &
+          cat /tmp/logs/cloudflared/ssh.log
+          sleep 36
+          echo "sleep for 36 seconds"
+
+          cloudflared_dashboard_url=$(grep -m1 -oE "https?://[a-zA-Z0-9.-]+\.trycloudflare\.com" /tmp/logs/cloudflared/dashboard.log)
+          cloudflared_miniserve_url=$(grep -m1 -oE "https?://[a-zA-Z0-9.-]+\.trycloudflare\.com" /tmp/logs/cloudflared/miniserve.log)
+          cloudflared_ssh_url=$(grep -m1 -oE "https?://[a-zA-Z0-9.-]+\.trycloudflare\.com" /tmp/logs/cloudflared/ssh.log)
+          cloudflared_ssh_host=$(echo "$cloudflared_ssh_url" | sed -E 's#https?://##')
+
+          echo "🖥️ Dashboard available at: $cloudflared_dashboard_url"
+          echo "🌐 Miniserve available at: $cloudflared_miniserve_url"
+          echo "🔑 Connect with: ssh -o ProxyCommand=\"cloudflared access ssh --hostname %h\" debuguser@$cloudflared_ssh_host"
+          echo "🔑 Connect with: sshpass -p 'password' ssh -o StrictHostKeyChecking=no -o ProxyCommand=\"cloudflared access ssh --hostname %h\" debuguser@$cloudflared_ssh_host"
+          echo "🔑 Default password: password"
+          echo "TUNNEL: $cloudflared_ssh_url"
 
       - name: Keep session alive
         run: |
           trap '' SIGINT SIGTERM
-          RAW_TIME="${{ github.event.inputs.SSH_MAX_TIME }}"
-          case "$RAW_TIME" in
-            1h) SLEEP_TIME=$((1 * 3600)) ;;
-            2h) SLEEP_TIME=$((2 * 3600)) ;;
-            3h) SLEEP_TIME=$((3 * 3600)) ;;
-            4h) SLEEP_TIME=$((4 * 3600)) ;;
-            5h) SLEEP_TIME=$((5 * 3600)) ;;
-            5h45m) SLEEP_TIME=$((5 * 3600 + 45 * 60)) ;;
-          esac
+          npm start --session-start-timestamp=$START_TIME --session-end-timestamp=$END_TIME --exit-on-session-end
           echo "⏳ Keeping SSH session alive for $RAW_TIME ($SLEEP_TIME seconds)"
           echo "🔗 Updates available at: https://github.com/chunix64/github-action-ssh"
-          sleep "$SLEEP_TIME" || true

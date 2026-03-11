@@ -8,16 +8,17 @@ export function parseCliArgs(argv = process.argv.slice(2)) {
       case "--port":
         config.port = Number(value);
         break;
-
       case "--frontend-port":
         config.frontendPort = Number(value);
         break;
-
-      case "--sessionStartTimestamp":
+      case "--session-start-timestamp":
         config.sessionStartTimestamp = Number(value);
         break;
-      case "--sessionEndTimestamp":
+      case "--session-end-timestamp":
         config.sessionEndTimestamp = Number(value);
+        break;
+      case "--exit-on-session-end":
+        config.exitOnSessionEnd = true;
         break;
     }
   }

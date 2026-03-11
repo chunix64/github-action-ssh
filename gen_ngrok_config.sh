@@ -7,9 +7,12 @@ agent:
   api_key: $2
 
 tunnels:
-  miniserve:
+  dashboard:
     proto: http
     addr: 80
+  miniserve:
+    proto: http
+    addr: 8080
   ssh_server:
     addr: 22
     proto: tcp
