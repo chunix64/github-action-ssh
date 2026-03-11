@@ -1,8 +1,8 @@
 const app = {
   system_info_interval: 2000,
-  api_host: "oooo.sas",
   api_base: "/api/v1",
-  api_port: 13636,
+  api_host: import.meta.env.VITE_API_HOST ?? null,
+  api_port: import.meta.env.VITE_API_PORT ?? 13636,
 };
 
 export default app;

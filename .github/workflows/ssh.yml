@@ -91,7 +91,7 @@ jobs:
         run: |
           cd $GITHUB_WORKSPACE/frontend
           npm i
-          npm run build
+          VITE_API_PORT=80 npm run build
           cd $GITHUB_WORKSPACE/backend
           npm i
           mkdir $GITHUB_WORKSPACE/runtime
