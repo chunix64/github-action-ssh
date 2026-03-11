@@ -143,7 +143,7 @@ jobs:
           --route-prefix / \
           --header "Access-Control-Allow-Origin: *" \
           --verbose \
-          > tmp/miniserve/latest.log 2>&1 &
+          > /tmp/miniserve/latest.log 2>&1 &
 
       - name: Start ngrok
         if: ${{ steps.prepare.outputs.ngrok_token_not_empty == 'true' }}
@@ -196,6 +196,6 @@ jobs:
         run: |
           trap '' SIGINT SIGTERM
           cd $GITHUB_WORKSPACE/backend
-          npm start --session-start-timestamp=$START_TIME --session-end-timestamp=$END_TIME --exit-on-session-end
+          sudo npm start --session-start-timestamp=$START_TIME --session-end-timestamp=$END_TIME --exit-on-session-end
           echo "⏳ Keeping SSH session alive for $RAW_TIME ($SLEEP_TIME seconds)"
           echo "🔗 Updates available at: https://github.com/chunix64/github-action-ssh"
