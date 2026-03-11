@@ -80,6 +80,8 @@ jobs:
       - name: Clean-up
         if: ${{ github.event.inputs.START_CLEAN_UP == 'true' }}
         uses: rokibhasansagar/slimhub_actions@main
+        with:
+          retain: "nodejs_npm"
 
       - name: Swap Setup
         if: ${{ github.event.inputs.START_SWAP_SPACE >= 0 }}
@@ -89,7 +91,6 @@ jobs:
 
       - name: Setup github-action-ssh dashboard
         run: |
-          sudo apt update && sudo apt install -y nodejs npm
           cd $GITHUB_WORKSPACE/frontend
           npm i
           VITE_API_PORT=80 npm run build
