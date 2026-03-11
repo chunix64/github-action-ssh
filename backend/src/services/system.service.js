@@ -1,3 +1,5 @@
+import { exec } from "node:child_process";
+import { spawn } from "node:child_process";
 import si from "systeminformation";
 
 export async function getCpuInfo() {
@@ -44,4 +46,15 @@ export async function getDiskInfo() {
     free: rootDisk.size - rootDisk.used,
     percent: rootDisk.use
   };
+}
+
+export async function isServiceRunning(name) {
+  const code = await new Promise((resolve, reject) => {
+    const p = spawn("pgrep", ["-x", name]);
+
+    p.on("error", reject);
+    p.on("close", resolve);
+  });
+
+  return code === 0;
 }

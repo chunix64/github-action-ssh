@@ -6,6 +6,8 @@ import styles from "./ServiceStatus.module.scss";
 const cx = classNames.bind(styles);
 
 function ServiceStatus({ serviceName = "Unknown", status = -1, Icon = InfoRoundedIcon }) {
+  status = Number(status);
+
   switch (status) {
     case 0:
       status = "offline"

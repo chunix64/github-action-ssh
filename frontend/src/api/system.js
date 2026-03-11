@@ -12,3 +12,6 @@ export async function getDiskInfo() {
   return await apiFetch("/system/disk");
 }
 
+export async function getMiniserveStatus() {
+  return await apiFetch("/system/check/miniserve");
+}
