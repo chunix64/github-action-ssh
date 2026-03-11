@@ -4,31 +4,31 @@ on:
   workflow_dispatch:
     inputs:
       SSH_MAX_TIME:
-        description: 'SSH session max duration (1–6 hrs)'
+        description: "SSH session max duration (1–6 hrs)"
         required: true
-        default: '2h'
+        default: "2h"
         type: choice
         options:
-          - '1h'
-          - '2h'
-          - '3h'
-          - '4h'
-          - '5h'
-          - '5h45m'
+          - "1h"
+          - "2h"
+          - "3h"
+          - "4h"
+          - "5h"
+          - "5h45m"
       NGROK_AUTH_TOKEN:
-        description: 'ngrok API auth token'
+        description: "ngrok API auth token"
         required: false
-        default: ''
+        default: ""
       SWAP_SIZE:
-        description: 'add Swap/virtual RAM in GBs'
+        description: "add Swap/virtual RAM in GBs"
         required: false
         default: 16
       START_MINISERVE:
-        description: 'Enable miniserve HTTP file server'
+        description: "Enable miniserve HTTP file server"
         type: boolean
         default: true
       START_CLEAN_UP:
-        description: 'Run disk cleanup (~78GB→125GB free, ~4min)'
+        description: "Run disk cleanup (~78GB→125GB free, ~4min)"
         type: boolean
         default: false
 
@@ -57,7 +57,7 @@ jobs:
           else
             echo "ngrok_token_not_empty=false" >> $GITHUB_OUTPUT
           fi
-          
+
           RAW_TIME="${{ github.event.inputs.SSH_MAX_TIME }}"
           case "$RAW_TIME" in
             1h) SLEEP_TIME=$((1 * 3600)) ;;
@@ -68,7 +68,7 @@ jobs:
             5h45m) SLEEP_TIME=$((5 * 3600 + 45 * 60)) ;;
           esac
           END_TIME=$((START_TIME + SLEEP_TIME))
-     
+
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -81,7 +81,7 @@ jobs:
         uses: pierotofy/set-swap-space@master
         with:
           swap-size-gb: ${{ github.event.inputs.SWAP_SIZE }}
-      
+
       - name: Setup github-action-ssh dashboard
         run: |
           cd $GITHUB_WORKSPACE/frontend
@@ -124,9 +124,26 @@ jobs:
       - name: Start miniserve
         if: ${{ github.event.inputs.START_MINISERVE == 'true' }}
         run: |
-          wget -q -nc https://github.com/svenstaro/miniserve/releases/download/v0.31.0/miniserve-0.31.0-x86_64-unknown-linux-gnu
-          chmod +x ./miniserve-0.31.0-x86_64-unknown-linux-gnu
-          nohup sudo ./miniserve-0.31.0-x86_64-unknown-linux-gnu / --hidden --port 80 --directory-size --upload-files &
+          wget -q -nc https://github.com/svenstaro/miniserve/releases/download/v0.33.0/miniserve-0.33.0-x86_64-unknown-linux-gnu
+          chmod +x ./miniserve-0.33.0-x86_64-unknown-linux-gnu
+          mkdir -p /tmp/miniserve
+          nohup sudo ./miniserve-0.33.0-x86_64-unknown-linux-gnu / \
+          -p 8080 \
+          -i 0.0.0.0 \
+          --hidden \
+          --upload-files \
+          --overwrite-files \
+          --mkdir \
+          --directory-size \
+          --show-symlink-info \
+          --gzip \
+          --brotli \
+          --spa \
+          --index index.html \
+          --route-prefix / \
+          --header "Access-Control-Allow-Origin: *" \
+          --verbose \
+          > tmp/miniserve/latest.log 2>&1 &
 
       - name: Start ngrok
         if: ${{ steps.prepare.outputs.ngrok_token_not_empty == 'true' }}
@@ -137,19 +154,19 @@ jobs:
           nohup ngrok start --all --config=./ngrok.yml &>/dev/null &
           sleep 5
           echo "sleep for 5 seconds"
-          
+
           ngrok_dashboard_url=$(curl -s localhost:4040/api/tunnels | jq -r '.tunnels[] | select(.name=="dashboard" and .proto=="https") | .public_url')
           ngrok_ssh_url=$(curl -s localhost:4040/api/tunnels | jq -r '.tunnels[] | select(.name=="ssh_server") | .public_url')  
           ngrok_miniserve_url=$(curl -s localhost:4040/api/tunnels | jq -r '.tunnels[] | select(.name=="miniserve" and .proto=="https") | .public_url')
           ngrok_host=$(echo "$ngrok_ssh_url" | sed -E 's#^tcp://([^:]+):.*#\1#')
           ngrok_port=$(echo "$ngrok_ssh_url" | sed -E 's#^tcp://[^:]+:(.*)$#\1#')
-         
+
           echo "🖥️ Dashboard available at: $ngrok_dashboard_url"
           echo "🌐 Miniserve available at: $ngrok_miniserve_url"
           echo "🔑 Connect with: ssh debuguser@$ngrok_host -p $ngrok_port"
           echo "🔑 Connect with: sshpass -p 'password' ssh -o StrictHostKeyChecking=no debuguser@$ngrok_host -p $ngrok_port"
           echo "🔑 Default password: password"
-          echo "TUNNEL: $ngrok_ssh_url"          
+          echo "TUNNEL: $ngrok_ssh_url"
 
       - name: Start cloudflared
         continue-on-error: true
