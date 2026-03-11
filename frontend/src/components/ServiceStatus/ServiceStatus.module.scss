@@ -24,19 +24,13 @@
   display: flex;
   align-items: center;
   font-size: var(--font-size-lg);
-    
-  .text {
-    display: flex;
-    align-items: center;
-  }
-
+  
   .value {
-    margin-left: var(--space-1);
     font-weight: bold;
     text-transform: uppercase;
-    display: flex;
-    align-items: center;
     color: var(--color-warning);
+    display: inline-flex;
+    align-items: center;
   }
 
   &.online .value {

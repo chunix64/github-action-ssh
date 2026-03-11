@@ -23,11 +23,17 @@ function ServiceStatus({ serviceName = "Unknown", status = -1, Icon = InfoRounde
   return (
     <div className={cx('wrapper')}>
       <div className={cx('title')}>
-        <InfoRoundedIcon/>
+        <Icon/>
         <span className={cx('label')}>{serviceName}</span>
       </div>
       <div className={cx('status', status)}>
-        <span className={cx('text')}>Status: <span className={cx('value')}>{status} <FiberManualRecordRoundedIcon/></span></span>
+        <div className={cx('text')}>
+          <span>Status: </span>
+          <div className={cx('value')}>
+            {status}
+            <FiberManualRecordRoundedIcon/>
+          </div>
+        </div>        
       </div>
     </div>
   )
