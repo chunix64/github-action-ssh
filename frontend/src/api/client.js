@@ -1,8 +1,8 @@
 import config from "@/config";
 
 const api_host = config?.app?.api_host ?? window.location.hostname;
-const api_port = config?.app?.api_port ?? 13636;
-const api_base = config?.app?.api_base ?? "/api/v1";
+const api_port = config?.app?.api_port;
+const api_base = config?.app?.api_base;
 
 const API_BASE = `http://${api_host}:${api_port}${api_base}`;
 
