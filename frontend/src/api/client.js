@@ -4,7 +4,7 @@ const api_host = config?.app?.api_host;
 const api_port = config?.app?.api_port;
 const api_base = config?.app?.api_base;
 
-var API_BASE = `/${api_port}${api_base}`;
+var API_BASE = `${api_base}`;
 
 if (api_host) {
   API_BASE = `http://${api_host}:${api_port}${api_base}`;
