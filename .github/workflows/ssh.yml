@@ -39,7 +39,7 @@ jobs:
       contents: write
 
     steps:
-      - name: Prepare variables
+      - name: Prepare environment
         id: prepare
         env:
           NGROK_TOKEN: ${{ secrets.NGROK_AUTH_TOKEN }}
