@@ -1,11 +1,11 @@
 import { NavLink } from "react-router";
 import classNames from "classnames/bind";
 
-import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
-import HomeRepairServiceRounded from '@mui/icons-material/HomeRepairServiceRounded';
-import TextSnippetRounded from '@mui/icons-material/TextSnippetRounded';
-import WysiwygRounded from '@mui/icons-material/WysiwygRounded';
-import SettingsRounded from '@mui/icons-material/SettingsRounded';
+import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
+import HomeRepairServiceRounded from "@mui/icons-material/HomeRepairServiceRounded";
+import TextSnippetRounded from "@mui/icons-material/TextSnippetRounded";
+import WysiwygRounded from "@mui/icons-material/WysiwygRounded";
+import SettingsRounded from "@mui/icons-material/SettingsRounded";
 
 import styles from "./Footer.module.scss";
 const cx = classNames.bind(styles);
@@ -35,21 +35,27 @@ const navbarItems = [
     to: "/settings",
     title: "Settings",
     icon: SettingsRounded,
-  }
+  },
 ];
 
 function Footer() {
   return (
     <footer className={cx("wrapper")}>
-      <nav className={cx('navbar')}>
+      <nav className={cx("navbar")}>
         {navbarItems.map((item, index) => {
           var Icon = item.icon;
           return (
-          <NavLink className={({ isActive }) => cx("nav-item", {active: isActive})} to={item.to} key={index}>
-            <div className={cx("icon")}><Icon/></div>
-            <span className={cx('title')}>{item.title}</span>
-          </NavLink>
-        )
+            <NavLink
+              className={({ isActive }) => cx("nav-item", { active: isActive })}
+              to={item.to}
+              key={index}
+            >
+              <div className={cx("icon")}>
+                <Icon />
+              </div>
+              <span className={cx("title")}>{item.title}</span>
+            </NavLink>
+          );
         })}
       </nav>
     </footer>

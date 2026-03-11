@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import classNames from "classnames/bind";
 
-import SystemMonitor from "@/components/SystemMonitor"
-import Uptime from "@/components/Uptime"
-import ServiceStatus from "@/components/ServiceStatus"
-import ServiceList from "@/components/ServiceList"
+import SystemMonitor from "@/components/SystemMonitor";
+import Uptime from "@/components/Uptime";
+import ServiceStatus from "@/components/ServiceStatus";
+import ServiceList from "@/components/ServiceList";
 
 import { getSystemInfo } from "@/api/polling";
-import config from "@/config"
+import config from "@/config";
 import styles from "./Home.module.scss";
 const cx = classNames.bind(styles);
 
@@ -27,13 +27,13 @@ function Home() {
   return (
     <div className={cx("wrapper")}>
       <SystemMonitor systemInfo={systemInfo} />
-      <div className={cx('widgets')}>
+      <div className={cx("widgets")}>
         <Uptime />
         <ServiceStatus serviceName="Miniserve" status={systemInfo?.miniserve} />
       </div>
       <ServiceList />
     </div>
-  )
+  );
 }
 
 export default Home;

@@ -4,9 +4,9 @@ import { Fragment } from "react";
 import config from "@/config";
 import DefaultLayout from "@/layouts/DefaultLayout";
 
-import NotFound from "@/pages/NotFound"
-import Home from "@/pages/Home"
-import ComingSoon from "@/pages/ComingSoon"
+import NotFound from "@/pages/NotFound";
+import Home from "@/pages/Home";
+import ComingSoon from "@/pages/ComingSoon";
 
 function createRoute(path, Component, Layout) {
   let AppliedLayout = DefaultLayout;

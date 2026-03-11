@@ -2,7 +2,7 @@ import {
   getCpuInfo,
   getMemoryInfo,
   getDiskInfo,
-  isServiceRunning
+  isServiceRunning,
 } from "../services/system.service.js";
 
 export async function cpuInfo(req, res) {

@@ -13,20 +13,19 @@
   }
 }
 
-
 .text {
   display: flex;
   align-items: center;
   font-variant-numeric: tabular-nums;
   margin-bottom: var(--space-2);
   font-weight: bold;
-  
+
   &:last-child {
     margin-bottom: 0;
   }
 
-  .value, .label {
+  .value,
+  .label {
     margin-left: var(--space-1);
   }
 }
-

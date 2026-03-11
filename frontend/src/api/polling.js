@@ -1,5 +1,10 @@
-import { getCpuInfo, getMemoryInfo, getDiskInfo, getMiniserveStatus } from "@/api/system.js"
-import config from "@/config"
+import {
+  getCpuInfo,
+  getMemoryInfo,
+  getDiskInfo,
+  getMiniserveStatus,
+} from "@/api/system.js";
+import config from "@/config";
 
 let cache = null;
 let lastFetch = 0;

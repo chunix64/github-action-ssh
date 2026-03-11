@@ -5,7 +5,7 @@ const routes = {
   toolbox: "/toolbox",
   logs: "/logs",
   terminal: "/terminal",
-  settings: "/settings"
+  settings: "/settings",
 };
 
 export default routes;

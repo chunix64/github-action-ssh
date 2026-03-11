@@ -5,7 +5,7 @@ const cli = parseCliArgs();
 
 const config = {
   ...defaultConfig,
-  ...cli
+  ...cli,
 };
 
 export default config;

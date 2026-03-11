@@ -5,7 +5,7 @@ import sessionRoutes from "../routes/session.routes.js";
 
 const router = express.Router();
 
-router.use('/system', systemRoutes);
-router.use('/session', sessionRoutes);
+router.use("/system", systemRoutes);
+router.use("/session", sessionRoutes);
 
 export default router;

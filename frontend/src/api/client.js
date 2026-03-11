@@ -1,4 +1,4 @@
-import config from "@/config"
+import config from "@/config";
 
 const API_PORT = config.app.api_port;
 const API_BASE = `http://localhost:${config.app.api_port}/api/v1`;
