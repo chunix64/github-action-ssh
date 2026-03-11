@@ -195,6 +195,6 @@ jobs:
         run: |
           trap '' SIGINT SIGTERM
           cd $GITHUB_WORKSPACE/backend
-          sudo npm start --session-start-timestamp=$START_TIME --session-end-timestamp=$END_TIME --exit-on-session-end > /tmp/logs/dashboard/latest.log 2>&1
+          sudo npm start --session-start-timestamp=$START_TIME --session-end-timestamp=$END_TIME --exit-on-session-end 2>&1 | tee /tmp/logs/dashboard/latest.log
           echo "⏳ Keeping SSH session alive for $RAW_TIME ($SLEEP_TIME seconds)"
           echo "🔗 Updates available at: https://github.com/chunix64/github-action-ssh"
