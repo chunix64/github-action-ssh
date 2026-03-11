@@ -11,6 +11,11 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const API_BASE = "/api/v1";
 
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.originalUrl} - ${req.ip}`);
+  next();
+});
+
 app.set('trust proxy', true);
 
 app.use(cors());
