@@ -9,18 +9,13 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-const frontend = express();
 const API_BASE = "/api/v1";
 
 app.set('trust proxy', true);
-frontend.set('trust proxy', true);
 
 app.use(cors());
-frontend.use(cors());
 
 app.use(`${API_BASE}/`, router);
-frontend.use(express.static(path.join(__dirname, '..', 'static')));
-
-app.frontend = frontend;
+app.use(express.static(path.join(__dirname, '..', 'static')));
 
 export default app;

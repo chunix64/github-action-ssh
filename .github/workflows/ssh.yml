@@ -178,8 +178,8 @@ jobs:
           cat /tmp/logs/cloudflared/miniserve.log
           nohup cloudflared tunnel --url ssh://localhost:22 2> /tmp/logs/cloudflared/ssh.log &
           cat /tmp/logs/cloudflared/ssh.log
-          sleep 36
-          echo "sleep for 36 seconds"
+          sleep 5
+          echo "sleep for 5 seconds"
 
           cloudflared_dashboard_url=$(grep -m1 -oE "https?://[a-zA-Z0-9.-]+\.trycloudflare\.com" /tmp/logs/cloudflared/dashboard.log)
           cloudflared_miniserve_url=$(grep -m1 -oE "https?://[a-zA-Z0-9.-]+\.trycloudflare\.com" /tmp/logs/cloudflared/miniserve.log)
