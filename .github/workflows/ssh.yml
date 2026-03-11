@@ -89,6 +89,7 @@ jobs:
 
       - name: Setup github-action-ssh dashboard
         run: |
+          sudo apt update && sudo apt install -y nodejs npm
           cd $GITHUB_WORKSPACE/frontend
           npm i
           VITE_API_PORT=80 npm run build
