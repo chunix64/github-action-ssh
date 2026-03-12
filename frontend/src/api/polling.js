@@ -13,7 +13,7 @@ let system_info_interval = config?.app?.system_info_interval ?? 0;
 export async function getSystemInfo() {
   const now = Date.now();
 
-  if (now - lastFetch > system_info_interval) {
+  if (!cache || now - lastFetch > system_info_interval) {
     const res = {};
     res.cpu = await getCpuInfo();
     res.memory = await getMemoryInfo();
