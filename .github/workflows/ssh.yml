@@ -198,6 +198,6 @@ jobs:
         run: |
           trap '' SIGINT SIGTERM
           cd $GITHUB_WORKSPACE/backend
-          tail -f /tmp/logs/dashboard/latest.log --pid=$DASHBOARD_PID & wait $DASHBOARD_PID
+          tail -f /tmp/logs/dashboard/latest.log --pid=$DASHBOARD_PID
           echo "⏳ Keeping SSH session alive for $RAW_TIME ($SLEEP_TIME seconds)"
           echo "🔗 Updates available at: https://github.com/chunix64/github-action-ssh"
