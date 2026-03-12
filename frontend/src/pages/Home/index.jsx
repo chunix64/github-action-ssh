@@ -17,11 +17,16 @@ function Home() {
   const [systemInfo, setSystemInfo] = useState(null);
 
   useEffect(() => {
-    const interval = setInterval(async () => {
+    const fetchSystemInfo = async () => {
       setSystemInfo(await getSystemInfo());
-    }, system_info_interval);
+    };
 
-    return () => clearInterval(interval);
+    fetchSystemInfo();
+
+    if (system_info_interval > 0) {
+      const interval = setInterval(fetchSystemInfo, system_info_interval);
+      return () => clearInterval(interval);
+    }
   }, []);
 
   return (
