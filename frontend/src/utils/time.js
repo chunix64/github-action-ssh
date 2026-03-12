@@ -3,7 +3,7 @@ function getFormattedTimeRange(totalSeconds) {
     return "00h 00m 00s";
   }
 
-  const hours = Math.floor(totalSeconds / 3600); // 1 hour = 3600 seconds
+  const hours = Math.floor(totalSeconds / 3600);
   const minutes = Math.floor((totalSeconds - hours * 3600) / 60);
   const seconds = totalSeconds - hours * 3600 - minutes * 60;
 

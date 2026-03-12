@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import path from "path";
-import { fileURLToPath } from 'url';
+import { fileURLToPath } from "url";
 
 import router from "./routes/index.js";
 
@@ -16,11 +16,11 @@ const API_BASE = "/api/v1";
 //   next();
 // });
 
-app.set('trust proxy', true);
+app.set("trust proxy", true);
 
 app.use(cors());
 
 app.use(`${API_BASE}/`, router);
-app.use(express.static(path.join(__dirname, '..', 'static')));
+app.use(express.static(path.join(__dirname, "..", "static")));
 
 export default app;
