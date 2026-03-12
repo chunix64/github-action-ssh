@@ -1,5 +1,5 @@
 #!/bin/sh
-cat <<EOF > ngrok.yml
+cat << EOF > ngrok.yml
 version: 3
 
 agent:
