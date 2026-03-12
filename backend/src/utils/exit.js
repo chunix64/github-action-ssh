@@ -2,8 +2,6 @@ import config from "../config/server.js";
 import { getFormattedTime, getFormattedTimeRange } from "./time.js";
 
 export function exitOnSessionEnd() {
-  console.log(`[DEBUG] util: exitOnSessionEnd`, config.exitOnSessionEnd);
-  console.log(`[DEBUG] util: sessionEndTimestamp`, config.sessionEndTimestamp);
   if (config.exitOnSessionEnd && config.sessionEndTimestamp > 0) {
     const now = Math.floor(Date.now() / 1000);
     const delay = (config.sessionEndTimestamp - now) * 1000;
