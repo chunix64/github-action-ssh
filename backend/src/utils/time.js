@@ -1,3 +1,15 @@
+function getTimezone() {
+  const offset = -new Date().getTimezoneOffset(); // minutes
+
+  const sign = offset >= 0 ? "+" : "-";
+  const abs = Math.abs(offset);
+
+  const hours = String(Math.floor(abs / 60)).padStart(2, "0");
+  const minutes = String(abs % 60).padStart(2, "0");
+
+  return `UTC${sign}${hours}:${minutes}`;
+}
+
 function isSameDay(date1, date2) {
   return (
     date1.getFullYear() === date2.getFullYear() &&
@@ -22,11 +34,15 @@ export function getFormattedTimeRange(totalSeconds) {
   return `${formattedHours}h ${formattedMinutes}m ${formattedSeconds}s`;
 }
 
-export function getFormattedTime(timestamp) {
+export function getFormattedTime(timestamp, withTimezone = true) {
   const now = new Date();
   const date = new Date(timestamp * 1000);
 
   const time = date.toLocaleTimeString(undefined, { hour12: false });
 
-  return isSameDay(now, date) ? time : `${date.toLocaleDateString()} ${time}`;
+  const base = isSameDay(now, date)
+    ? time
+    : `${date.toLocaleDateString()} ${time}`;
+
+  return withTimezone ? `${base} ${getTimezone()}` : base;
 }

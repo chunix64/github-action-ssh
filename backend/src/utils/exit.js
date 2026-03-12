@@ -6,8 +6,9 @@ export function exitOnSessionEnd() {
     const now = Math.floor(Date.now() / 1000);
     const delay = (config.sessionEndTimestamp - now) * 1000;
 
+    console.log(`⏳ Current time:     ${getFormattedTime(now)}`);
     console.log(
-      `⏳ Process exits at: ${getFormattedTime(config.sessionEndTimestamp)}`,
+      `⏳ Session ends at:  ${getFormattedTime(config.sessionEndTimestamp)}`,
     );
 
     if (delay <= 0) {
@@ -15,9 +16,7 @@ export function exitOnSessionEnd() {
       process.exit(0);
     }
 
-    console.log(
-      `⏳ Process will exit after ${getFormattedTimeRange(delay / 1000)}`,
-    );
+    console.log(`⏳ Process exits in: ${getFormattedTimeRange(delay / 1000)}`);
 
     setTimeout(() => {
       console.log("🔴 Session ended. Shutting down.");
