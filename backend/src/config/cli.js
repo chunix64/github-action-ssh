@@ -12,12 +12,15 @@ export function parseCliArgs(argv = process.argv.slice(2)) {
         config.frontendPort = Number(value);
         break;
       case "--session-start-timestamp":
+        console.log(`[DEBUG] cli: sessionStartTimestamp`, value, Number(value));
         config.sessionStartTimestamp = Number(value);
         break;
       case "--session-end-timestamp":
+        console.log(`[DEBUG] cli: sessionEndTimestamp`, value, Number(value));
         config.sessionEndTimestamp = Number(value);
         break;
       case "--exit-on-session-end":
+        console.log(`[DEBUG] cli: exitOnSessionEnd`);
         config.exitOnSessionEnd = true;
         break;
     }
