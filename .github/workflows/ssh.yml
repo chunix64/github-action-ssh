@@ -171,7 +171,8 @@ jobs:
           echo "🌐 Miniserve available at: $ngrok_miniserve_url"
           echo "🔑 Connect with: ssh debuguser@$ngrok_host -p $ngrok_port"
           echo "🔑 Connect with: sshpass -p 'password' ssh -o StrictHostKeyChecking=no debuguser@$ngrok_host -p $ngrok_port"
-          echo "🔑 Default password: password"
+          echo "👤 Default username: debuguser"
+          echo "🔑 Default password: password"          
           echo "TUNNEL: $ngrok_ssh_url"
 
       - name: Start cloudflared
@@ -192,6 +193,7 @@ jobs:
           echo "🌐 Miniserve available at: $cloudflared_miniserve_url"
           echo "🔑 Connect with: ssh -o ProxyCommand=\"cloudflared access ssh --hostname %h\" debuguser@$cloudflared_ssh_host"
           echo "🔑 Connect with: sshpass -p 'password' ssh -o StrictHostKeyChecking=no -o ProxyCommand=\"cloudflared access ssh --hostname %h\" debuguser@$cloudflared_ssh_host"
+          echo "👤 Default username: debuguser"          
           echo "🔑 Default password: password"
           echo "TUNNEL: $cloudflared_ssh_url"
 
