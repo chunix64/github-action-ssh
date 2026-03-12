@@ -69,6 +69,10 @@ jobs:
           esac
           END_TIME=$((START_TIME + SLEEP_TIME))
 
+          echo "SLEEP_TIME=$SLEEP_TIME" >> $GITHUB_ENV
+          echo "END_TIME=$END_TIME" >> $GITHUB_ENV
+          echo "RAW_TIME=$RAW_TIME" >> $GITHUB_ENV
+
           mkdir -p /tmp/logs/dashboard/
           mkdir -p /tmp/logs/miniserve/
           mkdir -p /tmp/logs/cloudflared/
@@ -84,7 +88,7 @@ jobs:
           retain: "nodejs_npm"
 
       - name: Swap Setup
-        if: ${{ github.event.inputs.START_SWAP_SPACE >= 0 }}
+        if: ${{ github.event.inputs.SWAP_SIZE > 0 }}
         uses: pierotofy/set-swap-space@master
         with:
           swap-size-gb: ${{ github.event.inputs.SWAP_SIZE }}
@@ -96,8 +100,6 @@ jobs:
           VITE_API_PORT=80 npm run build
           cd $GITHUB_WORKSPACE/backend
           npm i
-          mkdir $GITHUB_WORKSPACE/runtime
-          cd $GITHUB_WORKSPACE/runtime
 
       - name: Install ngrok
         if: ${{ steps.prepare.outputs.ngrok_token_not_empty == 'true' }}
@@ -175,9 +177,7 @@ jobs:
         run: |
           nohup cloudflared tunnel --url http://localhost:80 2> /tmp/logs/cloudflared/dashboard.log &
           nohup cloudflared tunnel --url http://localhost:8080 2> /tmp/logs/cloudflared/miniserve.log &
-          cat /tmp/logs/cloudflared/miniserve.log
           nohup cloudflared tunnel --url ssh://localhost:22 2> /tmp/logs/cloudflared/ssh.log &
-          cat /tmp/logs/cloudflared/ssh.log
           sleep 15
           echo "sleep for 15 seconds"
 
