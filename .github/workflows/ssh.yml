@@ -139,7 +139,6 @@ jobs:
           --hidden \
           --upload-files \
           --mkdir \
-          --directory-size \
           --show-symlink-info \
           --index index.html \
           --header "Access-Control-Allow-Origin: *" \
