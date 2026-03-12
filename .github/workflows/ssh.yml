@@ -158,7 +158,6 @@ jobs:
           echo "sleep for 5 seconds"
 
           ngrok_dashboard_url=$(curl -s localhost:4040/api/tunnels | jq -r '.tunnels[] | select(.name=="dashboard" and .proto=="https") | .public_url')
-          ngrok_dashboard_url=${ngrok_dashboard_url/https:/http:}
           ngrok_ssh_url=$(curl -s localhost:4040/api/tunnels | jq -r '.tunnels[] | select(.name=="ssh_server") | .public_url')  
           ngrok_miniserve_url=$(curl -s localhost:4040/api/tunnels | jq -r '.tunnels[] | select(.name=="miniserve" and .proto=="https") | .public_url')
           ngrok_host=$(echo "$ngrok_ssh_url" | sed -E 's#^tcp://([^:]+):.*#\1#')
@@ -183,7 +182,6 @@ jobs:
           echo "sleep for 15 seconds"
 
           cloudflared_dashboard_url=$(grep -m1 -oE "https?://[a-zA-Z0-9.-]+\.trycloudflare\.com" /tmp/logs/cloudflared/dashboard.log)
-          cloudflared_dashboard_url=${cloudflared_dashboard_url/https:/http:}
           cloudflared_miniserve_url=$(grep -m1 -oE "https?://[a-zA-Z0-9.-]+\.trycloudflare\.com" /tmp/logs/cloudflared/miniserve.log)
           cloudflared_ssh_url=$(grep -m1 -oE "https?://[a-zA-Z0-9.-]+\.trycloudflare\.com" /tmp/logs/cloudflared/ssh.log)
           cloudflared_ssh_host=$(echo "$cloudflared_ssh_url" | sed -E 's#https?://##')
