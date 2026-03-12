@@ -142,7 +142,6 @@ jobs:
           --directory-size \
           --show-symlink-info \
           --index index.html \
-          --route-prefix / \
           --header "Access-Control-Allow-Origin: *" \
           --verbose \
           > /tmp/logs/miniserve/latest.log 2>&1 &
