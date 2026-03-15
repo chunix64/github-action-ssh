@@ -12,7 +12,7 @@ const cx = classNames.bind(styles);
 
 const navbarItems = [
 	{
-		to: "/home",
+		to: "/",
 		title: "Home",
 		icon: HomeRoundedIcon,
 	},
@@ -43,7 +43,7 @@ function Footer() {
 		<footer className={cx("wrapper")}>
 			<nav className={cx("navbar")}>
 				{navbarItems.map((item, index) => {
-					var Icon = item.icon;
+					const Icon = item.icon;
 					return (
 						<NavLink
 							className={({ isActive }) => cx("nav-item", { active: isActive })}
