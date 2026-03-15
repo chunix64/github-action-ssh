@@ -78,7 +78,7 @@ jobs:
           mkdir -p /tmp/logs/miniserve/
           mkdir -p /tmp/logs/cloudflared/
           mkdir -p /tmp/logs/ngrok/
-          
+
           sudo apt update
           sudo apt install -y jq sshpass curl
 
@@ -106,7 +106,7 @@ jobs:
           npm i
           nohup sudo node src/index.js --session-start-timestamp=$START_TIME --session-end-timestamp=$END_TIME --exit-on-session-end > /tmp/logs/dashboard/latest.log 2>&1 &
           echo "DASHBOARD_PID=$!" >> $GITHUB_ENV
-      
+
       - name: Install ngrok
         continue-on-error: true
         if: ${{ steps.prepare.outputs.ngrok_token_not_empty == 'true' }}
@@ -219,7 +219,7 @@ jobs:
           echo "👤 Default username: debuguser"          
           echo "🔑 Default password: password"
           echo "TUNNEL: $cloudflared_ssh_url"
-          
+
           payload=$(jq -n \
             --arg dashboard "$cloudflared_dashboard_url" \
             --arg miniserve "$cloudflared_miniserve_url" \
