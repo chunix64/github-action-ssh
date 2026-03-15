@@ -227,7 +227,7 @@ jobs:
           '{
             provider: "Cloudflare",
             dashboard: [{ url: $dashboard, port: 80 }],
-            ssh: [{ url: $host, port: 80, tcp: true }],
+            ssh: [{ url: $host, port: 22, tcp: true }],
             miniserve: [{ url: $miniserve, port: 80 }],
             others: []
           }')

@@ -21,7 +21,18 @@ function ServiceCard({ service }) {
       <div className={cx("services")}>
         {group.flatMap(({ key, label, Icon }) =>
           service?.[key]?.map((item, index) => {
-            const url = item.port == 80 ? item.url : `${item.url}:${item.port}`;
+            let url = `${item.url}:${item.port}`;
+
+            if (item.key === "ssh") {
+              if (item.port == 22 || !item.port) {
+                url = item.url;
+              }
+            } else {
+              if (item.port == 80 || item.port == 443 || !item.port) {
+                url = item.url;
+              }
+            }
+
             return (
               <div key={`${key}-${index}`} className={cx("service")}>
                 <Icon />
