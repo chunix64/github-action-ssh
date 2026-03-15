@@ -14,18 +14,32 @@
 }
 
 .text {
-  display: flex;
-  align-items: center;
-  font-variant-numeric: tabular-nums;
   margin-bottom: var(--space-2);
   font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  font-variant-numeric: tabular-nums;
+  .base {
+    display: flex;
+    align-items: center;
 
-  &:last-child {
-    margin-bottom: 0;
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    .value,
+    .label {
+      margin-left: var(--space-1);
+    }
   }
+  
+  .detail {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 
-  .value,
-  .label {
-    margin-left: var(--space-1);
+    span {
+      text-align: center;
+    }
   }
 }

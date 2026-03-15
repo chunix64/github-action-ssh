@@ -21,13 +21,18 @@ export async function apiFetch(path, options = {}) {
     });
   } catch (error) {
     console.warn(`Network error: ${error.message}`);
-    return {};
+    return null;
   }
 
   if (!res.ok) {
     console.warn(`API error: ${res.status}`);
-    return {};
+    return null;
   }
 
-  return res.json();
+  try {
+    return await res.json();
+  } catch (error) {
+    console.warn("JSON parse error:", error.message);
+    return null;
+  }
 }

@@ -16,16 +16,25 @@ function SystemMonitor({ systemInfo }) {
         label="RAM"
         value={systemInfo?.memory?.ram?.percent}
         Icon={DnsRoundedIcon}
+        isDetail={true}
+        usedBytes={systemInfo?.memory?.ram?.used}
+        totalBytes={systemInfo?.memory?.ram?.total}
       />
       <MonitorBar
         label="SWAP"
         value={systemInfo?.memory?.swap?.percent}
         Icon={SwapHorizontalCircleRoundedIcon}
+        isDetail={true}
+        usedBytes={systemInfo?.memory?.swap?.used}
+        totalBytes={systemInfo?.memory?.swap?.total}
       />
       <MonitorBar
         label="DISK"
         value={systemInfo?.disk?.percent}
         Icon={StorageRoundedIcon}
+        isDetail={true}
+        usedBytes={systemInfo?.disk?.used}
+        totalBytes={systemInfo?.disk?.total}
       />
     </div>
   );
