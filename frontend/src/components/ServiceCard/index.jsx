@@ -40,7 +40,7 @@ function ServiceCard({ service }) {
 								<span className={cx("text")}>
 									{label}:{" "}
 									{key === "ssh" ? (
-										{ url }
+										[url]
 									) : (
 										<a className={cx("link")} href={url}>
 											{url}
