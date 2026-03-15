@@ -4,6 +4,9 @@ This GitHub Action sets up an Ubuntu Linux environment with SSH access tunneled 
 
 ---
 
+## 📸 Screenshot
+<img width="1280" height="800" alt="Image" src="https://github.com/user-attachments/assets/d12fe2c8-14b7-4ab0-bbda-89b221aca28d" />
+
 ## ⚙️ Features
 
 - 📡 SSH access via ngrok and cloudflared tunnel
