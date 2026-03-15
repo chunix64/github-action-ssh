@@ -175,6 +175,22 @@ jobs:
           echo "🔑 Default password: password"          
           echo "TUNNEL: $ngrok_ssh_url"
 
+           curl -X POST http://localhost/api/v1/session/tunnels \
+          -H 'Content-Type: application/json' \
+          -d '{
+            "provider": "Ngrok",
+            "dashboard": [
+              { "url": "'"$ngrok_dashboard_url"'", "port": 80 }
+            ],
+            "ssh": [
+              { "url": "'"$ngrok_ssh_url"'", "port": 80, "tcp": true }
+            ],
+            "miniserve": [
+              { "url": "'"$ngrok_miniserve_url"'", "port": 80 }
+            ],
+            "others": []
+          }'
+
       - name: Start cloudflared
         continue-on-error: true
         run: |
@@ -196,6 +212,22 @@ jobs:
           echo "👤 Default username: debuguser"          
           echo "🔑 Default password: password"
           echo "TUNNEL: $cloudflared_ssh_url"
+
+          curl -X POST http://localhost/api/v1/session/tunnels \
+          -H 'Content-Type: application/json' \
+          -d '{
+            "provider": "Cloudflare",
+            "dashboard": [
+              { "url": "'"$clouflared_dashboard_url"'", "port": 80 }
+            ],
+            "ssh": [
+              { "url": "'"$cloudflared_ssh_url"'", "port": 80, "tcp": true }
+            ],
+            "miniserve": [
+              { "url": "'"$clouflared_miniserve_url"'", "port": 80 }
+            ],
+            "others": []
+          }'
 
       - name: Keep session alive
         run: |
