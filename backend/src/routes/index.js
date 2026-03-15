@@ -1,7 +1,7 @@
 import express from "express";
 
-import systemRoutes from "../routes/system.routes.js";
 import sessionRoutes from "../routes/session.routes.js";
+import systemRoutes from "../routes/system.routes.js";
 
 const router = express.Router();
 

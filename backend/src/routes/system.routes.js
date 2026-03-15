@@ -1,9 +1,9 @@
 import express from "express";
 import {
-  cpuInfo,
-  memoryInfo,
-  diskInfo,
-  isMiniserveRunning,
+	cpuInfo,
+	diskInfo,
+	isMiniserveRunning,
+	memoryInfo,
 } from "../controllers/system.controller.js";
 
 const router = express.Router();

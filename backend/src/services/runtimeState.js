@@ -1,5 +1,5 @@
 const state = {
-  tunnels: [],
+	tunnels: [],
 };
 
 export default state;
