@@ -10,11 +10,12 @@
 
 .title {
   font-weight: bold;
-  font-size: var(--font-size-lg);
+  font-size: var(--font-size-xl);
 }
 
 .service {
   display: flex;
-  flex-direction: column;
   font-size: var(--font-size-md);
+  align-items: center;
+  gap: var(--space-1);
 }

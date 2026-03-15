@@ -18,13 +18,7 @@ export function getTunnels(req, res) {
 
 export function createTunnel(req, res) {
   try {
-    const { url, port, provider } = req.body;
-
-    if (!url) {
-      return res.status(400).json({ error: "url is required" });
-    }
-
-    const tunnel = createTunnelService(url, port, provider);
+    const tunnel = createTunnelService(req.body);
 
     res.status(201).json(tunnel);
   } catch (err) {

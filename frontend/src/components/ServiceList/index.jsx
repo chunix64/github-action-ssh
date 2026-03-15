@@ -1,107 +1,26 @@
 import classNames from "classnames/bind";
+import WarningRoundedIcon from '@mui/icons-material/WarningRounded';
 
 import ServiceCard from "@/components/ServiceCard";
+import { getTunnels } from "@/api/session";
+
 import styles from "./ServiceList.module.scss";
 const cx = classNames.bind(styles);
 
-const fakeServices = [
-  {
-    host: "demo data",
-    ssh: {
-      url: "0.tcp.ngrok.io",
-      port: 18651,
-    },
-    miniserve: {
-      url: "https://c786-135-232-216-69.ngrok-free.app",
-      port: 1312,
-    },
-  },
-  {
-    host: "demo data",
-    ssh: {
-      url: "0.tcp.ngrok.io",
-      port: 18651,
-    },
-    miniserve: {
-      url: "https://c786-135-232-216-69.ngrok-free.app",
-      port: 1312,
-    },
-  },
-  {
-    host: "demo data",
-    ssh: {
-      url: "0.tcp.ngrok.io",
-      port: 18651,
-    },
-    miniserve: {
-      url: "https://c786-135-232-216-69.ngrok-free.app",
-      port: 1312,
-    },
-  },
-  {
-    host: "demo data",
-    ssh: {
-      url: "0.tcp.ngrok.io",
-      port: 18651,
-    },
-    miniserve: {
-      url: "https://c786-135-232-216-69.ngrok-free.app",
-      port: 1312,
-    },
-  },
-  {
-    host: "demo data",
-    ssh: {
-      url: "0.tcp.ngrok.io",
-      port: 18651,
-    },
-    miniserve: {
-      url: "https://c786-135-232-216-69.ngrok-free.app",
-      port: 1312,
-    },
-  },
-  {
-    host: "demo data",
-    ssh: {
-      url: "0.tcp.ngrok.io",
-      port: 18651,
-    },
-    miniserve: {
-      url: "https://c786-135-232-216-69.ngrok-free.app",
-      port: 1312,
-    },
-  },
-  {
-    host: "demo data",
-    ssh: {
-      url: "0.tcp.ngrok.io",
-      port: 18651,
-    },
-    miniserve: {
-      url: "https://c786-135-232-216-69.ngrok-free.app",
-      port: 1312,
-    },
-  },
-  {
-    host: "demo data",
-    ssh: {
-      url: "0.tcp.ngrok.io",
-      port: 18651,
-    },
-    miniserve: {
-      url: "https://c786-135-232-216-69.ngrok-free.app",
-      port: 1312,
-    },
-  },
-];
+const tunnels = await getTunnels();
 
 function ServiceList() {
+  const isEmpty = !Boolean(tunnels?.length);
+
   return (
     <div className={cx("wrapper")}>
       <div className={cx("links")}>
-        {fakeServices.map((item, index) => {
+        {tunnels?.map((item, index) => {
           return <ServiceCard service={item} key={index} />;
         })}
+      </div>
+      <div className={cx('message', {hide: !isEmpty})}>
+         <WarningRoundedIcon/> No service found
       </div>
     </div>
   );

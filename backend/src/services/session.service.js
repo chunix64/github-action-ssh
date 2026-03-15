@@ -13,11 +13,13 @@ export function getTunnels() {
   return state.tunnels;
 }
 
-export function createTunnel(url, port = 80, provider = "unknown") {
+export function createTunnel({ provider = "unknown", dashboard = [], ssh = [], miniserve = [], others = [] }) {
   const tunnel = ({
-    url: url,
-    port: port,
     provider: provider,
+    dashboard: dashboard,
+    ssh: ssh,
+    miniserve: miniserve,
+    others: others,
   });
 
   state.tunnels.push(tunnel);

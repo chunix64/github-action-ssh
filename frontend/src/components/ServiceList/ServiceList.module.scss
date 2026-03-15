@@ -13,3 +13,14 @@
   flex-direction: column;
   gap: var(--space-base);
 }
+
+.message {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-1);
+
+  &.hide {
+    display: none;
+    visibility: hidden;
+  }
+}
