@@ -42,7 +42,7 @@ function ServiceCard({ service }) {
 									{key === "ssh" ? (
 										[url]
 									) : (
-										<a className={cx("link")} href={url}>
+										<a className={cx("link")} target="_blank" href={url}>
 											{url}
 										</a>
 									)}
