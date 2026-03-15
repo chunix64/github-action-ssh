@@ -1,8 +1,8 @@
 import express from "express";
 import {
 	createTunnel,
-  getTunnels,
-  sessionTime,
+	getTunnels,
+	sessionTime,
 } from "../controllers/session.controller.js";
 
 const router = express.Router();

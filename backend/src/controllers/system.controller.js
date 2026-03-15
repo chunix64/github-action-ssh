@@ -1,7 +1,7 @@
 import {
 	getCpuInfo,
 	getDiskInfo,
-  getMemoryInfo,
+	getMemoryInfo,
 	isServiceRunning,
 } from "../services/system.service.js";
 

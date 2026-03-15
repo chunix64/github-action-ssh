@@ -1,7 +1,7 @@
 import {
-  createTunnel as createTunnelService,
-  getSessionTime,
-  getTunnels as getTunnelsService,
+	createTunnel as createTunnelService,
+	getSessionTime,
+	getTunnels as getTunnelsService,
 } from "../services/session.service.js";
 
 export async function sessionTime(_req, res) {
