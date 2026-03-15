@@ -218,13 +218,13 @@ jobs:
           -d '{
             "provider": "Cloudflare",
             "dashboard": [
-              { "url": "'"$clouflared_dashboard_url"'", "port": 80 }
+              { "url": "'"$cloudflared_dashboard_url"'", "port": 80 }
             ],
             "ssh": [
               { "url": "'"$cloudflared_ssh_url"'", "port": 80, "tcp": true }
             ],
             "miniserve": [
-              { "url": "'"$clouflared_miniserve_url"'", "port": 80 }
+              { "url": "'"$cloudflared_miniserve_url"'", "port": 80 }
             ],
             "others": []
           }'
