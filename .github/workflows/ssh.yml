@@ -180,21 +180,23 @@ jobs:
           echo "🔑 Default password: password"          
           echo "TUNNEL: $ngrok_ssh_url"
 
+          payload=$(jq -n \
+            --arg dashboard "$ngrok_dashboard_url" \
+            --arg miniserve "$ngrok_miniserve_url" \
+            --arg host "$ngrok_ssh_host" \
+            --argjson port "$ngrok_ssh_port" \
+          '{
+            provider: "Ngrok",
+            dashboard: [{ url: $dashboard, port: 80 }],
+            ssh: [{ url: $host, port: $port, tcp: true }],
+            miniserve: [{ url: $miniserve, port: 80 }],
+            others: []
+          }')
+
           curl -X POST http://localhost:80/api/v1/session/tunnels \
-          -H 'Content-Type: application/json' \
-          -d '{
-            "provider": "Ngrok",
-            "dashboard": [
-              { "url": "'"$ngrok_dashboard_url"'", "port": 80 }
-            ],
-            "ssh": [
-              { "url": "'"$ngrok_ssh_host"'", "port": $ngrok_ssh_port, "tcp": true }
-            ],
-            "miniserve": [
-              { "url": "'"$ngrok_miniserve_url"'", "port": 80 }
-            ],
-            "others": []
-          }'
+            -H "Content-Type: application/json" \
+            -d "$payload" \
+            > /tmp/logs/ngrok/dashboard.log 2>&1
 
       - name: Start cloudflared
         continue-on-error: true
@@ -217,22 +219,23 @@ jobs:
           echo "👤 Default username: debuguser"          
           echo "🔑 Default password: password"
           echo "TUNNEL: $cloudflared_ssh_url"
+          
+          payload=$(jq -n \
+            --arg dashboard "$cloudflared_dashboard_url" \
+            --arg miniserve "$cloudflared_miniserve_url" \
+            --arg host "$cloudflared_ssh_host" \
+          '{
+            provider: "Cloudflare",
+            dashboard: [{ url: $dashboard, port: 80 }],
+            ssh: [{ url: $host, port: 80, tcp: true }],
+            miniserve: [{ url: $miniserve, port: 80 }],
+            others: []
+          }')
 
           curl -X POST http://localhost:80/api/v1/session/tunnels \
-          -H 'Content-Type: application/json' \
-          -d '{
-            "provider": "Cloudflare",
-            "dashboard": [
-              { "url": "'"$cloudflared_dashboard_url"'", "port": 80 }
-            ],
-            "ssh": [
-              { "url": "'"$cloudflared_ssh_host"'", "port": 80, "tcp": true }
-            ],
-            "miniserve": [
-              { "url": "'"$cloudflared_miniserve_url"'", "port": 80 }
-            ],
-            "others": []
-          }'
+            -H "Content-Type: application/json" \
+            -d "$payload" \
+            > /tmp/logs/cloudflared/dashboard.log 2>&1
 
       - name: Keep session alive
         run: |
