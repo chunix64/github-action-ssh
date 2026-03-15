@@ -8,9 +8,6 @@ export function parseCliArgs(argv = process.argv.slice(2)) {
       case "--port":
         config.port = Number(value);
         break;
-      case "--frontend-port":
-        config.frontendPort = Number(value);
-        break;
       case "--session-start-timestamp":
         config.sessionStartTimestamp = Number(value);
         break;

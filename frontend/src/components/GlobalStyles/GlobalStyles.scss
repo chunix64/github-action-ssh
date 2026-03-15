@@ -15,12 +15,13 @@
   --color-border: #2a2a31;
   --color-border-muted: #1f1f25;
 
-  --color-primary: #4ade80;
+  --color-primary: #3b82f6;
   --color-primary-hover: #2563eb;
   --color-primary-active: #1d4ed8;
   --color-primary-foreground: #ffffff;
 
   --color-secondary: #8b5cf6;
+  --color-third: #4ade80;
   --color-success: #22c55e;
   --color-warning: #f59e0b;
   --color-danger: #ef4444;
@@ -37,10 +38,12 @@
   --space-10: 40px;
   --space-12: 48px;
 
+  // size
   --space-base: var(--space-4);
   --header-height: 64px;
   --border-base: 2px;
   --progress-bar-height: 8px;
+  --button-size-base: 46px;
 
   // Fonts
   --font-main:

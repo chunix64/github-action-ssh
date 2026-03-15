@@ -1,6 +1,7 @@
 import classNames from "classnames/bind";
 import WarningRoundedIcon from "@mui/icons-material/WarningRounded";
 
+import SearchBar from "@/components/SearchBar";
 import ServiceCard from "@/components/ServiceCard";
 import { getTunnels } from "@/api/session";
 
@@ -14,6 +15,7 @@ function ServiceList() {
 
   return (
     <div className={cx("wrapper")}>
+      <div className={cx("header")}>Tunnels</div>
       <div className={cx("links")}>
         {tunnels?.map((item, index) => {
           return <ServiceCard service={item} key={index} />;
