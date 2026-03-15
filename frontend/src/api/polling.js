@@ -18,7 +18,7 @@ export async function getSystemInfo() {
     res.cpu = await getCpuInfo();
     res.memory = await getMemoryInfo();
     res.disk = await getDiskInfo();
-    res.miniserve = await getMiniserveStatus();
+    res.miniserve = (await getMiniserveStatus()) ?? -1;
     cache = res;
     lastFetch = now;
   }
