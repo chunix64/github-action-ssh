@@ -1,7 +1,7 @@
 import routes from "./routes.js";
 
 const config = {
-  routes,
+	routes,
 };
 
 export default config;

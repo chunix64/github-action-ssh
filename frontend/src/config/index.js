@@ -1,9 +1,9 @@
-import routes from "./routes.js";
 import app from "./app.js";
+import routes from "./routes.js";
 
 const config = {
-  routes,
-  app,
+	routes,
+	app,
 };
 
 export default config;
