@@ -1,4 +1,5 @@
 import { spawn } from "node:child_process";
+import os from "node:os";
 import si from "systeminformation";
 
 export async function getCpuInfo() {
@@ -46,13 +47,32 @@ export async function getDiskInfo() {
 }
 
 export async function isServiceRunning(name, strict = false) {
-  const args = strict ? ["-x", name] : [name];
-  const code = await new Promise((resolve, reject) => {
-    const p = spawn("pgrep", args);
+  const isWindows = os.platform() === "win32";
 
+  let cmd;
+  let args;
+
+  if (isWindows) {
+    cmd = "tasklist";
+    args = [];
+  } else {
+    cmd = "pgrep";
+    args = strict ? ["-x", name] : [name];
+  }
+
+  const output = await new Promise((resolve, reject) => {
+    const p = spawn(cmd, args);
+
+    let data = "";
+
+    p.stdout.on("data", chunk => (data += chunk));
     p.on("error", reject);
-    p.on("close", resolve);
+    p.on("close", () => resolve(data));
   });
 
-  return code === 0;
+  if (isWindows) {
+    return output.toLowerCase().includes(name.toLowerCase());
+  }
+
+  return output.trim().length > 0;
 }
