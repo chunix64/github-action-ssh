@@ -37,7 +37,9 @@ function ServiceCard({ service }) {
               <div key={`${key}-${index}`} className={cx("service")}>
                 <Icon />
                 <span className={cx("text")}>
-                  {label}: {url}
+                  {label}: {
+                    key === "ssh" ? (<>{url}</>) : (<a className={cx("link")} href={url}>{url}</a>)
+                  }
                 </span>
               </div>
             );
