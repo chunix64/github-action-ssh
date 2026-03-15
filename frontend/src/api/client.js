@@ -1,6 +1,9 @@
 import config from "@/config";
 
-const api_host = config?.app?.api_host;
+// For dev
+// const api_host = config?.app?.api_host ?? "localhost";
+
+const api_host = config?.app?.api_host ?? "localhost";
 const api_port = config?.app?.api_port;
 const api_base = config?.app?.api_base;
 
