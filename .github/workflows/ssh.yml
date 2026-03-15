@@ -164,7 +164,7 @@ jobs:
           ./gen_ngrok_config.sh "$NGROK_TOKEN"
           nohup ngrok start --all --config=./ngrok.yml > /tmp/logs/ngrok/latest.log &
           sleep 5
-          echo "sleep for 5 seconds"
+          echo "⏳ sleep for 5 seconds"
 
           ngrok_dashboard_url=$(curl -s localhost:4040/api/tunnels | jq -r '.tunnels[] | select(.name=="dashboard" and .proto=="https") | .public_url')
           ngrok_ssh_url=$(curl -s localhost:4040/api/tunnels | jq -r '.tunnels[] | select(.name=="ssh_server") | .public_url')  
@@ -204,8 +204,8 @@ jobs:
           nohup cloudflared tunnel --url http://localhost:80 2> /tmp/logs/cloudflared/dashboard.log &
           nohup cloudflared tunnel --url http://localhost:8080 2> /tmp/logs/cloudflared/miniserve.log &
           nohup cloudflared tunnel --url ssh://localhost:22 2> /tmp/logs/cloudflared/ssh.log &
-          sleep 15
-          echo "sleep for 15 seconds"
+          sleep 5
+          echo "⏳ sleep for 5 seconds"
 
           cloudflared_dashboard_url=$(grep -m1 -oE "https?://[a-zA-Z0-9.-]+\.trycloudflare\.com" /tmp/logs/cloudflared/dashboard.log)
           cloudflared_miniserve_url=$(grep -m1 -oE "https?://[a-zA-Z0-9.-]+\.trycloudflare\.com" /tmp/logs/cloudflared/miniserve.log)
