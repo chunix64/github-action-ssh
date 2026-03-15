@@ -78,6 +78,9 @@ jobs:
           mkdir -p /tmp/logs/miniserve/
           mkdir -p /tmp/logs/cloudflared/
           mkdir -p /tmp/logs/ngrok/
+          
+          sudo apt update
+          sudo apt install -y jq sshpass curl
 
       - name: Checkout
         uses: actions/checkout@v4
@@ -109,18 +112,17 @@ jobs:
           echo "test: $NGROK_TOKEN"
           curl -s https://ngrok-agent.s3.amazonaws.com/ngrok.asc | sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null
           echo "deb https://ngrok-agent.s3.amazonaws.com buster main" | sudo tee /etc/apt/sources.list.d/ngrok.list
-          sudo apt update && sudo apt install -y ngrok
+          sudo apt install -y ngrok
 
       - name: Install cloudflared
         run: |
           sudo mkdir -p --mode=0755 /usr/share/keyrings
           curl -fsSL https://pkg.cloudflare.com/cloudflare-main.gpg | sudo tee /usr/share/keyrings/cloudflare-main.gpg >/dev/null
           echo 'deb [signed-by=/usr/share/keyrings/cloudflare-main.gpg] https://pkg.cloudflare.com/cloudflared noble main' | sudo tee /etc/apt/sources.list.d/cloudflared.list
-          sudo apt update && sudo apt install -y cloudflared
+          sudo apt install -y cloudflared
 
       - name: Setup SSH server
         run: |
-          sudo apt update
           sudo apt install -y openssh-server
           sudo mkdir -p /var/run/sshd
           sudo useradd -m -s /bin/bash debuguser
@@ -164,18 +166,18 @@ jobs:
           ngrok_dashboard_url=$(curl -s localhost:4040/api/tunnels | jq -r '.tunnels[] | select(.name=="dashboard" and .proto=="https") | .public_url')
           ngrok_ssh_url=$(curl -s localhost:4040/api/tunnels | jq -r '.tunnels[] | select(.name=="ssh_server") | .public_url')  
           ngrok_miniserve_url=$(curl -s localhost:4040/api/tunnels | jq -r '.tunnels[] | select(.name=="miniserve" and .proto=="https") | .public_url')
-          ngrok_host=$(echo "$ngrok_ssh_url" | sed -E 's#^tcp://([^:]+):.*#\1#')
-          ngrok_port=$(echo "$ngrok_ssh_url" | sed -E 's#^tcp://[^:]+:(.*)$#\1#')
+          ngrok_ssh_host=$(echo "$ngrok_ssh_url" | sed -E 's#^tcp://([^:]+):.*#\1#')
+          ngrok_ssh_port=$(echo "$ngrok_ssh_url" | sed -E 's#^tcp://[^:]+:(.*)$#\1#')
 
           echo "🖥️ Dashboard available at: $ngrok_dashboard_url"
           echo "🌐 Miniserve available at: $ngrok_miniserve_url"
-          echo "🔑 Connect with: ssh debuguser@$ngrok_host -p $ngrok_port"
-          echo "🔑 Connect with: sshpass -p 'password' ssh -o StrictHostKeyChecking=no debuguser@$ngrok_host -p $ngrok_port"
+          echo "🔑 Connect with: ssh debuguser@$ngrok_ssh_host -p $ngrok_ssh_port"
+          echo "🔑 Connect with: sshpass -p 'password' ssh -o StrictHostKeyChecking=no debuguser@$ngrok_ssh_host -p $ngrok_ssh_port"
           echo "👤 Default username: debuguser"
           echo "🔑 Default password: password"          
           echo "TUNNEL: $ngrok_ssh_url"
 
-           curl -X POST http://localhost/api/v1/session/tunnels \
+          curl -X POST http://localhost:80/api/v1/session/tunnels \
           -H 'Content-Type: application/json' \
           -d '{
             "provider": "Ngrok",
@@ -183,7 +185,7 @@ jobs:
               { "url": "'"$ngrok_dashboard_url"'", "port": 80 }
             ],
             "ssh": [
-              { "url": "'"$ngrok_ssh_url"'", "port": 80, "tcp": true }
+              { "url": "'"$ngrok_ssh_host"'", "port": $ngrok_ssh_port, "tcp": true }
             ],
             "miniserve": [
               { "url": "'"$ngrok_miniserve_url"'", "port": 80 }
@@ -213,7 +215,7 @@ jobs:
           echo "🔑 Default password: password"
           echo "TUNNEL: $cloudflared_ssh_url"
 
-          curl -X POST http://localhost/api/v1/session/tunnels \
+          curl -X POST http://localhost:80/api/v1/session/tunnels \
           -H 'Content-Type: application/json' \
           -d '{
             "provider": "Cloudflare",
@@ -221,7 +223,7 @@ jobs:
               { "url": "'"$cloudflared_dashboard_url"'", "port": 80 }
             ],
             "ssh": [
-              { "url": "'"$cloudflared_ssh_url"'", "port": 80, "tcp": true }
+              { "url": "'"$cloudflared_ssh_host"'", "port": 80, "tcp": true }
             ],
             "miniserve": [
               { "url": "'"$cloudflared_miniserve_url"'", "port": 80 }
