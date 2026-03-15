@@ -1,0 +1,16 @@
+.wrapper {
+  height: 100vh;
+  height: 100dvh;
+  width: 100vw;
+  overflow-x: hidden;
+  color: var(--color-text);
+}
+
+.container {
+  width: 100vw;
+  height: calc(100vh - var(--header-height) * 2);
+  height: calc(100dvh - var(--header-height) * 2);
+  overflow-x: hidden;
+  padding: var(--space-base);
+  box-sizing: border-box;
+}

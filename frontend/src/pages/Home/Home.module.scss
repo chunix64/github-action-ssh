@@ -1,0 +1,15 @@
+.wrapper {
+  display: grid;
+  gap: var(--space-base);
+}
+
+.widgets {
+  display: flex;
+  justify-content: space-evenly;
+  gap: var(--space-base);
+
+  & > * {
+    flex: 1;
+    height: 100%;
+  }
+}

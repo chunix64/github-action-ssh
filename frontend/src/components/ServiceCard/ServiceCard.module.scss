@@ -1,0 +1,25 @@
+.wrapper {
+  background-color: var(--color-bg);
+  height: fit-content;
+  padding: var(--space-base);
+  border-radius: var(--radius-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.title {
+  font-weight: bold;
+  font-size: var(--font-size-xl);
+}
+
+.service {
+  display: flex;
+  font-size: var(--font-size-md);
+  align-items: center;
+  gap: var(--space-1);
+
+  .link {
+    color: var(--color-text);
+  }
+}

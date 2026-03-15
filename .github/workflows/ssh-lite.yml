@@ -1,4 +1,4 @@
-name: Ubuntu Linux SSH
+name: Ubuntu Linux SSH - lite
 
 on:
   workflow_dispatch:
@@ -44,7 +44,6 @@ jobs:
         env:
           NGROK_TOKEN: ${{ secrets.NGROK_AUTH_TOKEN }}
         run: |
-          START_TIME=$(date +%s)
           NGROK_AUTH_TOKEN=$(jq -r '.inputs.NGROK_AUTH_TOKEN' $GITHUB_EVENT_PATH)
           echo ::add-mask::$NGROK_AUTH_TOKEN
           if [ -n "$NGROK_AUTH_TOKEN" ]; then
@@ -69,18 +68,15 @@ jobs:
           esac
           END_TIME=$((START_TIME + SLEEP_TIME))
 
-          echo "START_TIME=$START_TIME" >> $GITHUB_ENV
           echo "RAW_SLEEP_TIME=$RAW_SLEEP_TIME" >> $GITHUB_ENV
           echo "SLEEP_TIME=$SLEEP_TIME" >> $GITHUB_ENV
-          echo "END_TIME=$END_TIME" >> $GITHUB_ENV
 
-          mkdir -p /tmp/logs/dashboard/
           mkdir -p /tmp/logs/miniserve/
           mkdir -p /tmp/logs/cloudflared/
           mkdir -p /tmp/logs/ngrok/
 
           sudo apt update
-          sudo apt install -y jq curl
+          sudo apt install -y jq
 
       - name: Checkout
         uses: actions/checkout@v4
@@ -96,16 +92,6 @@ jobs:
         uses: pierotofy/set-swap-space@master
         with:
           swap-size-gb: ${{ github.event.inputs.SWAP_SIZE }}
-
-      - name: Setup github-action-ssh dashboard
-        run: |
-          cd $GITHUB_WORKSPACE/frontend
-          npm i
-          VITE_API_PORT=80 npm run build
-          cd $GITHUB_WORKSPACE/backend
-          npm i
-          nohup sudo node src/index.js --session-start-timestamp=$START_TIME --session-end-timestamp=$END_TIME --exit-on-session-end > /tmp/logs/dashboard/latest.log 2>&1 &
-          echo "DASHBOARD_PID=$!" >> $GITHUB_ENV
 
       - name: Install ngrok
         continue-on-error: true
@@ -172,31 +158,12 @@ jobs:
           ngrok_ssh_host=$(echo "$ngrok_ssh_url" | sed -E 's#^tcp://([^:]+):.*#\1#')
           ngrok_ssh_port=$(echo "$ngrok_ssh_url" | sed -E 's#^tcp://[^:]+:(.*)$#\1#')
 
-          echo "🖥️ Dashboard available at: $ngrok_dashboard_url"
           echo "🌐 Miniserve available at: $ngrok_miniserve_url"
           echo "🔑 Connect with: ssh debuguser@$ngrok_ssh_host -p $ngrok_ssh_port"
           echo "🔑 Connect with: sshpass -p 'password' ssh -o StrictHostKeyChecking=no debuguser@$ngrok_ssh_host -p $ngrok_ssh_port"
           echo "👤 Default username: debuguser"
           echo "🔑 Default password: password"          
           echo "TUNNEL: $ngrok_ssh_url"
-
-          payload=$(jq -n \
-            --arg dashboard "$ngrok_dashboard_url" \
-            --arg miniserve "$ngrok_miniserve_url" \
-            --arg host "$ngrok_ssh_host" \
-            --argjson port "$ngrok_ssh_port" \
-          '{
-            provider: "Ngrok",
-            dashboard: [{ url: $dashboard, port: 80 }],
-            ssh: [{ url: $host, port: $port, tcp: true }],
-            miniserve: [{ url: $miniserve, port: 80 }],
-            others: []
-          }')
-
-          curl -X POST http://localhost:80/api/v1/session/tunnels \
-            -H "Content-Type: application/json" \
-            -d "$payload" \
-            > /tmp/logs/ngrok/dashboard.log 2>&1
 
       - name: Start cloudflared
         continue-on-error: true
@@ -212,7 +179,6 @@ jobs:
           cloudflared_ssh_url=$(grep -m1 -oE "https?://[a-zA-Z0-9.-]+\.trycloudflare\.com" /tmp/logs/cloudflared/ssh.log)
           cloudflared_ssh_host=$(echo "$cloudflared_ssh_url" | sed -E 's#https?://##')
 
-          echo "🖥️ Dashboard available at: $cloudflared_dashboard_url"
           echo "🌐 Miniserve available at: $cloudflared_miniserve_url"
           echo "🔑 Connect with: ssh -o ProxyCommand=\"cloudflared access ssh --hostname %h\" debuguser@$cloudflared_ssh_host"
           echo "🔑 Connect with: sshpass -p 'password' ssh -o StrictHostKeyChecking=no -o ProxyCommand=\"cloudflared access ssh --hostname %h\" debuguser@$cloudflared_ssh_host"
@@ -220,25 +186,10 @@ jobs:
           echo "🔑 Default password: password"
           echo "TUNNEL: $cloudflared_ssh_url"
 
-          payload=$(jq -n \
-            --arg dashboard "$cloudflared_dashboard_url" \
-            --arg miniserve "$cloudflared_miniserve_url" \
-            --arg host "$cloudflared_ssh_host" \
-          '{
-            provider: "Cloudflare",
-            dashboard: [{ url: $dashboard, port: 80 }],
-            ssh: [{ url: $host, port: 22, tcp: true }],
-            miniserve: [{ url: $miniserve, port: 80 }],
-            others: []
-          }')
-
-          curl -X POST http://localhost:80/api/v1/session/tunnels \
-            -H "Content-Type: application/json" \
-            -d "$payload" \
-            > /tmp/logs/cloudflared/dashboard.log 2>&1
-
       - name: Keep session alive
         run: |
           trap '' SIGINT SIGTERM
           cd $GITHUB_WORKSPACE/backend
-          tail -f /tmp/logs/dashboard/latest.log --pid=$DASHBOARD_PID
+          echo "⏳ Keeping SSH session alive for $RAW_TIME ($SLEEP_TIME seconds)"
+          echo "🔗 Updates available at: https://github.com/chunix64/github-action-ssh"
+          sleep "$SLEEP_TIME" || true

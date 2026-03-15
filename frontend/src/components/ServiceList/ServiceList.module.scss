@@ -1,0 +1,33 @@
+.wrapper {
+  background-color: var(--color-bg-secondary);
+  height: fit-content;
+  padding: var(--space-base);
+  border-radius: var(--radius-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.header {
+  padding: var(--space-base) 0;
+  font-weight: bold;
+  font-size: var(--font-size-xl);
+}
+
+.links {
+  margin-top: var(--space-base);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-base);
+}
+
+.message {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-1);
+
+  &.hide {
+    display: none;
+    visibility: hidden;
+  }
+}
