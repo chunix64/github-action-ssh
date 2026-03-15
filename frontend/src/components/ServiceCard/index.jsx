@@ -23,8 +23,8 @@ function ServiceCard({ service }) {
           service?.[key]?.map((item, index) => {
             let url = `${item.url}:${item.port}`;
 
-            if (item.key === "ssh") {
-              if (item.port == 22 || !item.port) {
+            if (key === "ssh") {
+              if (item.port === 22 || !item.port) {
                 url = item.url;
               }
             } else {
