@@ -18,7 +18,7 @@ function MonitorBar({
   isDetail = false,
 }) {
   const { used, total } = formatBytesPair(usedBytes, totalBytes, precision);
-  
+
   if (!value) {
     value = 0;
   }
@@ -34,16 +34,14 @@ function MonitorBar({
             {suffix}
           </span>
         </div>
-        <div className={cx('detail')}>
-          {
-            isDetail && (
-              <>
-                <span className={cx("used")}>{used}</span>
-                <span className={cx("seperator")}>/</span>
-                <span className={cx("total")}>{total}</span>
-              </>
-            )
-          }
+        <div className={cx("detail")}>
+          {isDetail && (
+            <>
+              <span className={cx("used")}>{used}</span>
+              <span className={cx("seperator")}>/</span>
+              <span className={cx("total")}>{total}</span>
+            </>
+          )}
         </div>
       </div>
       <ProgressBar value={value} />

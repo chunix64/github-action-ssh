@@ -1,8 +1,8 @@
 import classNames from "classnames/bind";
-import DashboardRoundedIcon from '@mui/icons-material/DashboardRounded';
-import TerminalRoundedIcon from '@mui/icons-material/TerminalRounded';
-import StorageRoundedIcon from '@mui/icons-material/StorageRounded';
-import MiscellaneousServicesRoundedIcon from '@mui/icons-material/MiscellaneousServicesRounded';
+import DashboardRoundedIcon from "@mui/icons-material/DashboardRounded";
+import TerminalRoundedIcon from "@mui/icons-material/TerminalRounded";
+import StorageRoundedIcon from "@mui/icons-material/StorageRounded";
+import MiscellaneousServicesRoundedIcon from "@mui/icons-material/MiscellaneousServicesRounded";
 
 import styles from "./ServiceCard.module.scss";
 const cx = classNames.bind(styles);
@@ -12,28 +12,26 @@ function ServiceCard({ service }) {
     { key: "dashboard", label: "dashboard", Icon: DashboardRoundedIcon },
     { key: "ssh", label: "ssh", Icon: TerminalRoundedIcon },
     { key: "miniserve", label: "miniserve", Icon: StorageRoundedIcon },
-    { key: "others", label: "unknown", Icon: MiscellaneousServicesRoundedIcon }
-  ]
+    { key: "others", label: "unknown", Icon: MiscellaneousServicesRoundedIcon },
+  ];
 
   return (
     <div className={cx("wrapper")}>
       <div className={cx("title")}>{service?.provider}</div>
       <div className={cx("services")}>
-        {
-          group.flatMap(({ key, label, Icon }) =>
-            service?.[key]?.map((item, index) => {
-              const url = item.port == 80 ? item.url : `${item.url}:${item.port}`
-              return (
-                <div key={`${key}-${index}`} className={cx("service")}>
-                  <Icon />
-                  <span className={cx('text')}>
-                    {label}: {url}
-                  </span>
-                </div>
-              )
-            })
-          )
-        }
+        {group.flatMap(({ key, label, Icon }) =>
+          service?.[key]?.map((item, index) => {
+            const url = item.port == 80 ? item.url : `${item.url}:${item.port}`;
+            return (
+              <div key={`${key}-${index}`} className={cx("service")}>
+                <Icon />
+                <span className={cx("text")}>
+                  {label}: {url}
+                </span>
+              </div>
+            );
+          }),
+        )}
       </div>
     </div>
   );

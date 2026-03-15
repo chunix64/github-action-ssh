@@ -65,7 +65,7 @@ export async function isServiceRunning(name, strict = false) {
 
     let data = "";
 
-    p.stdout.on("data", chunk => (data += chunk));
+    p.stdout.on("data", (chunk) => (data += chunk));
     p.on("error", reject);
     p.on("close", () => resolve(data));
   });

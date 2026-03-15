@@ -16,7 +16,6 @@ const API_BASE = "/api/v1";
 //   next();
 // });
 
-
 app.use(express.json());
 app.set("trust proxy", true);
 

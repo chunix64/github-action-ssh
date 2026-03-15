@@ -1,5 +1,5 @@
 import classNames from "classnames/bind";
-import WarningRoundedIcon from '@mui/icons-material/WarningRounded';
+import WarningRoundedIcon from "@mui/icons-material/WarningRounded";
 
 import ServiceCard from "@/components/ServiceCard";
 import { getTunnels } from "@/api/session";
@@ -19,8 +19,8 @@ function ServiceList() {
           return <ServiceCard service={item} key={index} />;
         })}
       </div>
-      <div className={cx('message', {hide: !isEmpty})}>
-         <WarningRoundedIcon/> No service found
+      <div className={cx("message", { hide: !isEmpty })}>
+        <WarningRoundedIcon /> No service found
       </div>
     </div>
   );

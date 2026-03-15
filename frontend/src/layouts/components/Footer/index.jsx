@@ -4,7 +4,7 @@ import classNames from "classnames/bind";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import HomeRepairServiceRounded from "@mui/icons-material/HomeRepairServiceRounded";
 import TextSnippetRounded from "@mui/icons-material/TextSnippetRounded";
-import TerminalRoundedIcon from '@mui/icons-material/TerminalRounded';
+import TerminalRoundedIcon from "@mui/icons-material/TerminalRounded";
 import SettingsRounded from "@mui/icons-material/SettingsRounded";
 
 import styles from "./Footer.module.scss";
