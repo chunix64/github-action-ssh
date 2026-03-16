@@ -58,6 +58,7 @@ TUNNEL: <url>
 ## 💡 Notes
 
 - You should fork this repository and set it to private for better security and privacy.
+- Cloudflare tunnel is unreliable and buggy. It might fail randomly
 - **Password access** is `debuguser` / `password`. Use SSH keys for better security.
 - You can cancel the workflow anytime, but SSH session ends when the runner stops.
 - `START_MINISERVE` serves your entire filesystem (beware of sensitive data).

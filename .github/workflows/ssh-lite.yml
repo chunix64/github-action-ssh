@@ -1,4 +1,4 @@
-name: Ubuntu Linux SSH - lite
+name: Ubuntu Linux SSH - Lite
 
 on:
   workflow_dispatch:
