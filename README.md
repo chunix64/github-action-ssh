@@ -84,7 +84,8 @@ TUNNEL: <url>
 - Support macOS and Windows SSH
 - Add more documentation
 - Open all common ports by default
-- A web dashboard UI with settings
+- Finish the WebUI dashboard
+- Reponsive the WebUI dashboard properly
 
 ## 🔗 External Sources
 
